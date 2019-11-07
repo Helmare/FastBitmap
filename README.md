@@ -1,5 +1,5 @@
 # FastBitmap
-A wrapper for System.Drawing.Bitmap which allows for faster read/write pixel operations.
+A .NET Standard library which wraps the System.Drawing.Bitmap class for improved pixel read/write performance.
 
 ## Example
 ```C#
