@@ -1,6 +1,8 @@
 # FastBitmap
 A .NET Standard library which wraps the System.Drawing.Bitmap class for improved pixel read/write performance.
 
+[![nuget](https://img.shields.io/nuget/v/Hazdryx.FastBitmap.svg)](https://www.nuget.org/packages/Hazdryx.FastBitmap/)
+
 ## Example
 ```C#
 // Loads image from file.
