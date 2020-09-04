@@ -27,6 +27,8 @@
     https://pixabay.com/photos/new-york-brooklyn-bridge-nyc-city-5173657/
 */
 using System;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace Hazdryx.Drawing.Benchmark
 {
@@ -40,14 +42,64 @@ namespace Hazdryx.Drawing.Benchmark
         ///     The number of times each benchmark is ran.
         /// </summary>
         public const int IterationCount = 3;
-        /// <summary>
-        ///     The size of the bitmaps' width and height in pixels.
-        /// </summary>
-        public const int BitmapSize = 8192;
 
         public static void Main(string[] args)
         {
             Console.WriteLine("Running benchmark for FastBitmap v1.0.0");
+
+            Console.WriteLine("FastBitmap Coord:");
+            double fbcoord = TestFastBitmapCoord();
+            Console.WriteLine("\t" + (fbcoord / 1000).ToString("N2") + " mp/s");
+
+            Console.WriteLine("SystemBitmap Coord:");
+            double sbcoord = TestSystemBitmap();
+            Console.WriteLine("\t" + (sbcoord / 1000).ToString("N2") + " mp/s");
+
+            Console.WriteLine("\nFastBitmap is " + (100 * ((fbcoord / sbcoord) - 1)).ToString("N2") + "% faster.");
+
+            Console.Write("Finished All Benchmarks");
+            Console.Read();
+        }
+
+        private static double TestFastBitmapCoord()
+        {
+            using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
+            using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                for (int x = 0; x < dst.Width; x++)
+                {
+                    for(int y = 0; y < dst.Height; y++)
+                    {
+                        dst[x, y] = src[x, y];
+                    }
+                }
+                sw.Stop();
+
+                dst.Save("FastBitmapCoord.jpg");
+                return src.Width * src.Height / sw.Elapsed.TotalSeconds;
+            }
+        }
+        private static double TestSystemBitmap()
+        {
+            using (Bitmap src = new Bitmap(Image.FromFile("image.jpg")))
+            using (Bitmap dst = new Bitmap(src.Width, src.Height))
+            {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                for (int x = 0; x < dst.Width; x++)
+                {
+                    for (int y = 0; y < dst.Height; y++)
+                    {
+                        dst.SetPixel(x, y, src.GetPixel(x, y));
+                    }
+                }
+                sw.Stop();
+
+                dst.Save("SystemBitmap.jpg");
+                return src.Width * src.Height / sw.Elapsed.TotalSeconds;
+            }
         }
     }
 }
