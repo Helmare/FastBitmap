@@ -29,6 +29,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Hazdryx.Drawing.Benchmark
 {
@@ -48,11 +49,12 @@ namespace Hazdryx.Drawing.Benchmark
             //
             BenchmarkTest pt = new BenchmarkTest
             {
+                Name = "Single-Core Passthrough Benchmark",
                 IterationCount = 3
             };
-            
+
             // System.Drawing.Bitmap Coord Benchmark
-            pt.AddBenchmark("SC Passthrough | SysBitmap Coord", () =>
+            pt.AddBenchmark("SysBitmap Coord", () =>
             {
                 using (Bitmap src = new Bitmap(Image.FromFile("image.jpg")))
                 using (Bitmap dst = new Bitmap(src.Width, src.Height))
@@ -74,7 +76,7 @@ namespace Hazdryx.Drawing.Benchmark
             });
 
             // FastBitmap Coord Benchmark
-            pt.AddBenchmark("SC Passthrough | FastBitmap Coord", () =>
+            pt.AddBenchmark("FastBitmap Coord", () =>
             {
                 using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
                 using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
@@ -96,7 +98,7 @@ namespace Hazdryx.Drawing.Benchmark
             });
 
             // FastBitmap Index Benchmark
-            pt.AddBenchmark("SC Passthrough | FastBitmap Index", () =>
+            pt.AddBenchmark("FastBitmap Index", () =>
             {
                 using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
                 using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
@@ -115,7 +117,7 @@ namespace Hazdryx.Drawing.Benchmark
             });
 
             // FastBitmap Int32 Benchmark
-            pt.AddBenchmark("SC Passthrough | FastBitmap Int32", () =>
+            pt.AddBenchmark("FastBitmap Int32", () =>
             {
                 using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
                 using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
@@ -128,13 +130,18 @@ namespace Hazdryx.Drawing.Benchmark
                     }
                     sw.Stop();
 
-                    dst.Save("FastBitmapIndex.jpg");
+                    dst.Save("FastBitmapInt32.jpg");
                     return src.Length / sw.Elapsed.TotalSeconds;
                 }
             });
 
             // Run Passthrough
             pt.Run();
+
+            // Render Graph
+            FastBitmap graph = pt.DrawGraph();
+            graph.Save("graph.png", ImageFormat.Png);
+            graph.Dispose();
 
             // Finished.
             Console.Write("\nAll Benchmarks Completed");
