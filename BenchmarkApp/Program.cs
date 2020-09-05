@@ -38,68 +38,69 @@ namespace Hazdryx.Drawing.Benchmark
     /// </summary>
     public class Program
     {
-        /// <summary>
-        ///     The number of times each benchmark is ran.
-        /// </summary>
-        public const int IterationCount = 3;
-
         public static void Main(string[] args)
         {
-            Console.WriteLine("Running benchmark for FastBitmap v1.0.0");
+            Console.WriteLine("FastBitmap (v1.0.0) Benchmarking App");
+            Console.WriteLine("------------------------------------------------");
 
-            Console.WriteLine("FastBitmap Coord:");
-            double fbcoord = TestFastBitmapCoord();
-            Console.WriteLine("\t" + (fbcoord / 1000).ToString("N2") + " mp/s");
+            //
+            // Single-Core Passthrough Benchmarks
+            //
+            BenchmarkTest pt = new BenchmarkTest
+            {
+                IterationCount = 3
+            };
+            
+            // System.Drawing.Bitmap Coord Benchmark
+            pt.AddBenchmark("SC Passthrough | SysBitmap Coord", () =>
+            {
+                using (Bitmap src = new Bitmap(Image.FromFile("image.jpg")))
+                using (Bitmap dst = new Bitmap(src.Width, src.Height))
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    for (int x = 0; x < dst.Width; x++)
+                    {
+                        for (int y = 0; y < dst.Height; y++)
+                        {
+                            dst.SetPixel(x, y, src.GetPixel(x, y));
+                        }
+                    }
+                    sw.Stop();
 
-            Console.WriteLine("SystemBitmap Coord:");
-            double sbcoord = TestSystemBitmap();
-            Console.WriteLine("\t" + (sbcoord / 1000).ToString("N2") + " mp/s");
+                    dst.Save("SystemBitmap.jpg");
+                    return src.Width * src.Height / sw.Elapsed.TotalSeconds;
+                }
+            });
 
-            Console.WriteLine("\nFastBitmap is " + (100 * ((fbcoord / sbcoord) - 1)).ToString("N2") + "% faster.");
+            // FastBitmap Coord Benchmark
+            pt.AddBenchmark("SC Passthrough | FastBitmap Coord", () =>
+            {
+                using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
+                using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    for (int x = 0; x < dst.Width; x++)
+                    {
+                        for (int y = 0; y < dst.Height; y++)
+                        {
+                            dst[x, y] = src[x, y];
+                        }
+                    }
+                    sw.Stop();
 
-            Console.Write("Finished All Benchmarks");
+                    dst.Save("FastBitmapCoord.jpg");
+                    return src.Width * src.Height / sw.Elapsed.TotalSeconds;
+                }
+            });
+
+            // Run Passthrough
+            pt.Run();
+
+            // Finished.
+            Console.Write("\nAll Benchmarks Completed");
             Console.Read();
-        }
-
-        private static double TestFastBitmapCoord()
-        {
-            using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
-            using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                for (int x = 0; x < dst.Width; x++)
-                {
-                    for(int y = 0; y < dst.Height; y++)
-                    {
-                        dst[x, y] = src[x, y];
-                    }
-                }
-                sw.Stop();
-
-                dst.Save("FastBitmapCoord.jpg");
-                return src.Width * src.Height / sw.Elapsed.TotalSeconds;
-            }
-        }
-        private static double TestSystemBitmap()
-        {
-            using (Bitmap src = new Bitmap(Image.FromFile("image.jpg")))
-            using (Bitmap dst = new Bitmap(src.Width, src.Height))
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-                for (int x = 0; x < dst.Width; x++)
-                {
-                    for (int y = 0; y < dst.Height; y++)
-                    {
-                        dst.SetPixel(x, y, src.GetPixel(x, y));
-                    }
-                }
-                sw.Stop();
-
-                dst.Save("SystemBitmap.jpg");
-                return src.Width * src.Height / sw.Elapsed.TotalSeconds;
-            }
         }
     }
 }
