@@ -91,7 +91,45 @@ namespace Hazdryx.Drawing.Benchmark
                     sw.Stop();
 
                     dst.Save("FastBitmapCoord.jpg");
-                    return src.Width * src.Height / sw.Elapsed.TotalSeconds;
+                    return src.Length / sw.Elapsed.TotalSeconds;
+                }
+            });
+
+            // FastBitmap Index Benchmark
+            pt.AddBenchmark("SC Passthrough | FastBitmap Index", () =>
+            {
+                using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
+                using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    for (int i = 0; i < dst.Length; i++)
+                    {
+                        src[i] = dst[i];
+                    }
+                    sw.Stop();
+
+                    dst.Save("FastBitmapIndex.jpg");
+                    return src.Length / sw.Elapsed.TotalSeconds;
+                }
+            });
+
+            // FastBitmap Int32 Benchmark
+            pt.AddBenchmark("SC Passthrough | FastBitmap Int32", () =>
+            {
+                using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
+                using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    for (int i = 0; i < dst.Length; i++)
+                    {
+                        src.Data[i] = dst.Data[i];
+                    }
+                    sw.Stop();
+
+                    dst.Save("FastBitmapIndex.jpg");
+                    return src.Length / sw.Elapsed.TotalSeconds;
                 }
             });
 
