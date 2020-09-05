@@ -33,7 +33,7 @@ namespace Hazdryx.Drawing.Benchmark
     public class BenchmarkTest
     {
         /// <summary>
-        ///     Gets a list of relatable benchmarks.
+        ///     Gets a list of relatable benchmarks, which the first is the baseline.
         /// </summary>
         public List<Benchmark> Benchmarks { get; } = new List<Benchmark>();
         /// <summary>
@@ -68,7 +68,12 @@ namespace Hazdryx.Drawing.Benchmark
                     double result = bench.Run();
                     Console.WriteLine(result.ToString("N3") + " px/s");
                 }
-                Console.WriteLine("Average: " + bench.Result.ToString("N3") + " px/s");
+
+                double compare = 100 * (bench.Result / Benchmarks[0].Result - 1);
+                Console.WriteLine(
+                    "Average: " + bench.Result.ToString("N3") + " px/s (" + 
+                    (compare > 0 ? "+" : "") + compare.ToString("N0") + "%)"
+                );
             }
         }
     }
