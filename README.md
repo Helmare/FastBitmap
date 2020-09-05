@@ -3,6 +3,12 @@ A .NET Standard library which wraps the System.Drawing.Bitmap class for improved
 
 [![nuget](https://img.shields.io/nuget/v/Hazdryx.FastBitmap.svg)](https://www.nuget.org/packages/Hazdryx.FastBitmap/)
 
+## Benchmarks
+The benchmark graph below shows just how much faster FastBitmap is. When using the fastest mode it can see
+speed increases up to 20,000% on a single core.
+![](https://hazdryx.com/cdn/FastBitmap-Benchmarks.png)
+<p style="text-align: center;">These benchmarks where taken on 9/5/2020 using a Ryzen 9 3950X 16C/32T CPU</p>
+
 ## Example
 ```C#
 // Loads image from file.
