@@ -207,7 +207,6 @@ namespace Hazdryx.Drawing
             Task.WaitAll(tasks);
         }
 
-        [Obsolete("Method has been moved to FastBitmapExt and will be removed in the future.")]
         /// <summary>
         ///     Streams each X and Y value to the callback.
         /// </summary>
@@ -216,6 +215,7 @@ namespace Hazdryx.Drawing
         ///     The first argument is the FastBitmap and the next two are X and Y.
         /// </param>
         /// <param name="threads">The number threads to use.</param>
+        [Obsolete("Method has been moved to FastBitmapExt and will be removed in the future.")]
         public void StreamByPixel(Action<FastBitmap, int, int> callback, int threads)
         {
             StreamByLine(new Action<FastBitmap, int>((bmp, y) =>
