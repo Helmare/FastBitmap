@@ -1,7 +1,7 @@
 ﻿/*
     MIT License
 
-    Copyright(c) 2019 Christopher Bishop
+    Copyright(c) 2020 Christopher Bishop
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -179,7 +179,6 @@ namespace Hazdryx.Drawing
         /// </summary>
         /// <param name="filename">The path of the image file.</param>
         public void Save(string filename) => BaseBitmap.Save(filename);
-
         /// <summary>
         ///     Saves the FastBitmap to a file using a specific format.
         /// </summary>
@@ -195,6 +194,7 @@ namespace Hazdryx.Drawing
         ///     The first argument is the FastBitmap and the next is the Y value.
         /// </param>
         /// <param name="threads">The number of threads to use.</param>
+        [Obsolete("Method has been moved to FastBitmapExt and will be removed in the future.")]
         public void StreamByLine(Action<FastBitmap, int> callback, int threads)
         {
             Task[] tasks = new Task[threads];
@@ -206,6 +206,8 @@ namespace Hazdryx.Drawing
 
             Task.WaitAll(tasks);
         }
+
+        [Obsolete("Method has been moved to FastBitmapExt and will be removed in the future.")]
         /// <summary>
         ///     Streams each X and Y value to the callback.
         /// </summary>

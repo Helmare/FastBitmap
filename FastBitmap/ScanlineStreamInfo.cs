@@ -28,6 +28,7 @@ namespace Hazdryx.Drawing
     /// <summary>
     ///     A class which stores information about the stream.
     /// </summary>
+    [Obsolete("Class has been moved to FastBitmapExt and will be removed in the future.")]
     public class ScanlineStreamInfo
     {
         /// <summary>
