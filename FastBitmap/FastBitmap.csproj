@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,7 +7,7 @@
     <Authors>Christopher Bishop</Authors>
     <Description>A wrapper for .NET Standard System.Drawing.Bitmap which increases read/write pixel operations.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Christopher Bishop</Copyright>
+    <Copyright>Copyright © Christopher Bishop 2020</Copyright>
     <PackageProjectUrl>https://github.com/hazdryx/FastBitmap</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hazdryx/FastBitmap</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
