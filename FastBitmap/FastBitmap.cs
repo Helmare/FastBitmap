@@ -36,7 +36,7 @@ namespace Hazdryx.Drawing
     ///     This class is based on the work from @SaxxonPike on Stackoverflow:
     ///     https://stackoverflow.com/questions/24701703/c-sharp-faster-alternatives-to-setpixel-and-getpixel-for-bitmaps-for-windows-f
     /// </summary>
-    public class FastBitmap : IDisposable
+    public class FastBitmap : IDisposable, ICloneable
     {
         /// <summary>
         ///     Gets the array which allows direct access to pixel data in Int32 (ARGB) form.
@@ -234,6 +234,20 @@ namespace Hazdryx.Drawing
         {
             BitsHandle.Free();
             BaseBitmap.Dispose();
+        }
+
+        /// <summary>
+        ///     Clones the FastBitmap into another FastBitmap.
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            FastBitmap clone = new FastBitmap(Width, Height);
+            for(int i = 0; i < Length; i++)
+            {
+                clone.Data[i] = Data[i];
+            }
+            return clone;
         }
 
         /// <summary>
