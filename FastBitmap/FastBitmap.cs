@@ -338,7 +338,7 @@ namespace Hazdryx.Drawing
         public object Clone()
         {
             FastBitmap clone = new FastBitmap(Width, Height);
-            Buffer.BlockCopy(Data, 0, clone.Data, 0, Length);
+            Buffer.BlockCopy(Data, 0, clone.Data, 0, Length * 4);
             return clone;
         }
         /// <summary>
