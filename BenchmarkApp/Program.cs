@@ -30,6 +30,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO.Compression;
 
 namespace Hazdryx.Drawing.Benchmark
 {
@@ -87,7 +88,7 @@ namespace Hazdryx.Drawing.Benchmark
                     {
                         for (int y = 0; y < dst.Height; y++)
                         {
-                            dst[x, y] = src[x, y];
+                            dst.Set(x, y, src.Get(x, y));
                         }
                     }
                     sw.Stop();
@@ -107,7 +108,7 @@ namespace Hazdryx.Drawing.Benchmark
                     sw.Start();
                     for (int i = 0; i < dst.Length; i++)
                     {
-                        src[i] = dst[i];
+                        dst.Set(i, src.Get(i));
                     }
                     sw.Stop();
 
