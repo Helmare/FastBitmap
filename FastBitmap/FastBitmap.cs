@@ -24,6 +24,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -144,9 +145,10 @@ namespace Hazdryx.Drawing
         }
         private int PointToIndex(int x, int y)
         {
-            if (x < 0 || x >= Width) throw new ArgumentOutOfRangeException();
-            if (y < 0 || y >= Height) throw new ArgumentOutOfRangeException();
-            return x + y * Width;
+            if (x < 0 || x >= Width || y < 0 || y >= Height) 
+                throw new ArgumentOutOfRangeException();
+            else
+                return x + y * Width;
         }
         /// <summary>
         ///     Gets or sets the color of a pixel at a specific point.
@@ -186,18 +188,37 @@ namespace Hazdryx.Drawing
         }
 
         /// <summary>
+        ///     Sets the color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="index">Index of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        public void SetI(int index, int color) => Data[index] = color;
+        /// <summary>
+        ///     Sets the color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="index">Index of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        /// <returns>Whether the color was set.</returns>
+        public bool TrySetI(int index, int color)
+        {
+            try
+            {
+                Data[index] = color;
+                return true;
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         ///     Gets color of a pixel in ARGB32 form.
         /// </summary>
         /// <param name="x">X component of the pixel.</param>
         /// <param name="y">Y component of the pixel.</param>
         /// <returns></returns>
-        public int GetI(int x, int y)
-        {
-            if (x < 0 || x > Width || y < 0 || y > Height) 
-                throw new ArgumentOutOfRangeException();
-            else 
-                return Data[PointToIndex(x, y)];
-        }
+        public int GetI(int x, int y) => Data[PointToIndex(x, y)];
         /// <summary>
         ///     Gets color of a pixel in ARGB32 form.
         /// </summary>
@@ -207,17 +228,45 @@ namespace Hazdryx.Drawing
         /// <returns>Whether the color was successfully obtained.</returns>
         public bool TryGetI(int x, int y, out int color)
         {
-            if (x < 0 || x > Width || y < 0 || y > Height)
-            {
-                color = 0;
-                return false;
-            }
-            else
+            try
             {
                 color = Data[PointToIndex(x, y)];
                 return true;
             }
+            catch(ArgumentOutOfRangeException)
+            {
+                color = 0;
+                return false;
+            }
         }
+
+        /// <summary>
+        ///     Sets the color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        public void SetI(int x, int y, int color) => Data[PointToIndex(x, y)] = color;
+        /// <summary>
+        ///     Sets the color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        /// <returns>Whether the color was set.</returns>
+        public bool TrySetI(int x, int y, int color)
+        {
+            try
+            {
+                Data[PointToIndex(x, y)] = color;
+                return true;
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         ///     Gets the width of the bitmap.
