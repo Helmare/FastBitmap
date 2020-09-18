@@ -24,6 +24,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -38,6 +39,21 @@ namespace Hazdryx.Drawing
     /// </summary>
     public class FastBitmap : ICloneable, IDisposable
     {
+        private static int _defaultArgb = 0;
+        private static Color _defaultColor = Color.FromArgb(_defaultArgb);
+        /// <summary>
+        ///     Gets or sets the color which is returned when a TryGet fails.
+        /// </summary>
+        public static Color DefaultColor
+        {
+            get => _defaultColor;
+            set
+            {
+                _defaultColor = value;
+                _defaultArgb = value.ToArgb();
+            }
+        }
+
         /// <summary>
         ///     Gets the array which allows direct access to pixel data in Int32 (ARGB) form.
         /// </summary>
@@ -49,9 +65,17 @@ namespace Hazdryx.Drawing
         /// </summary>
         public Bitmap BaseBitmap { get; }
         /// <summary>
-        ///     Gets or sets the color used when getting a pixel which is out of range.
+        ///     Gets the width of the bitmap.
         /// </summary>
-        public Color DefaultColor { get; set; } = Color.Transparent;
+        public int Width { get; private set; }
+        /// <summary>
+        ///     Gets the height of the bitmap.
+        /// </summary>
+        public int Height { get; private set; }
+        /// <summary>
+        ///     Gets the length of the pixel data.
+        /// </summary>
+        public int Length => Data.Length;
 
         /// <summary>
         ///     Initializes a blank bitmap.
@@ -99,7 +123,7 @@ namespace Hazdryx.Drawing
             }
             catch (ArgumentOutOfRangeException)
             {
-                color = Color.Empty;
+                color = _defaultColor;
                 return false;
             }
         }
@@ -159,7 +183,7 @@ namespace Hazdryx.Drawing
             }
             catch (ArgumentOutOfRangeException)
             {
-                color = Color.Empty;
+                color = _defaultColor;
                 return false;
             }
         }
@@ -212,7 +236,7 @@ namespace Hazdryx.Drawing
             }
             catch(ArgumentOutOfRangeException)
             {
-                color = 0;
+                color = _defaultArgb;
                 return false;
             }
         }
@@ -265,7 +289,7 @@ namespace Hazdryx.Drawing
             }
             catch(ArgumentOutOfRangeException)
             {
-                color = 0;
+                color = _defaultArgb;
                 return false;
             }
         }
@@ -296,20 +320,6 @@ namespace Hazdryx.Drawing
                 return false;
             }
         }
-
-
-        /// <summary>
-        ///     Gets the width of the bitmap.
-        /// </summary>
-        public int Width { get; private set; }
-        /// <summary>
-        ///     Gets the height of the bitmap.
-        /// </summary>
-        public int Height { get; private set; }
-        /// <summary>
-        ///     Gets the length of the pixel data.
-        /// </summary>
-        public int Length => Data.Length;
 
         /// <summary>
         ///     Saves the FastBitmap to a file.
