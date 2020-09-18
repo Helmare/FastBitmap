@@ -30,7 +30,6 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO.Compression;
 
 namespace Hazdryx.Drawing.Benchmark
 {
@@ -42,7 +41,7 @@ namespace Hazdryx.Drawing.Benchmark
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("FastBitmap (v1.0.0) Benchmarking App");
+            Console.WriteLine("FastBitmap (v1.1.0) Benchmarking App");
             Console.WriteLine("------------------------------------------------");
 
             //
