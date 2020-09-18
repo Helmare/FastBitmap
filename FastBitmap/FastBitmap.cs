@@ -24,9 +24,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Hazdryx.Drawing
 {
@@ -332,47 +330,6 @@ namespace Hazdryx.Drawing
         /// <param name="filename">The path of the image file.</param>
         /// <param name="format">The format of the image file.</param>
         public void Save(string filename, ImageFormat format) => BaseBitmap.Save(filename, format);
-
-        /// <summary>
-        ///     Streams each Y value to the callback.
-        /// </summary>
-        /// <param name="callback">
-        ///     The action called for each horizontal line. 
-        ///     The first argument is the FastBitmap and the next is the Y value.
-        /// </param>
-        /// <param name="threads">The number of threads to use.</param>
-        [Obsolete("Method has been moved to FastBitmapExt and will be removed in the future.")]
-        public void StreamByLine(Action<FastBitmap, int> callback, int threads)
-        {
-            Task[] tasks = new Task[threads];
-            for (int i = 0; i < threads; i++)
-            {
-                tasks[i] = new Task(new ScanlineStreamInfo(this, callback, i, threads).GetAction());
-                tasks[i].Start();
-            }
-
-            Task.WaitAll(tasks);
-        }
-
-        /// <summary>
-        ///     Streams each X and Y value to the callback.
-        /// </summary>
-        /// <param name="callback">
-        ///     The action called for each horizontal line. 
-        ///     The first argument is the FastBitmap and the next two are X and Y.
-        /// </param>
-        /// <param name="threads">The number threads to use.</param>
-        [Obsolete("Method has been moved to FastBitmapExt and will be removed in the future.")]
-        public void StreamByPixel(Action<FastBitmap, int, int> callback, int threads)
-        {
-            StreamByLine(new Action<FastBitmap, int>((bmp, y) =>
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    callback(bmp, x, y);
-                }
-            }), threads);
-        }
 
         /// <summary>
         ///     Clones the FastBitmap into another FastBitmap.
