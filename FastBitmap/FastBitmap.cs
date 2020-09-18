@@ -48,14 +48,6 @@ namespace Hazdryx.Drawing
         ///     Gets the underlying bitmap this object is wrapping.
         /// </summary>
         public Bitmap BaseBitmap { get; }
-
-        /// <summary>
-        ///     Gets or sets whether to ignore IndexOutOfRangeException (default is true).
-        ///     
-        ///     If this is set to true, getting a color will return <code>DefaultColor</code>
-        ///     if the index is out of range. Setting a color won't do anything.
-        /// </summary>
-        public bool IgnoreOutOfRange { get; set; } = true;
         /// <summary>
         ///     Gets or sets the color used when getting a pixel which is out of range.
         /// </summary>
@@ -84,73 +76,6 @@ namespace Hazdryx.Drawing
             {
                 g.DrawImage(image, 0, 0, image.Width, image.Height);
             }
-        }
-
-        /// <summary>
-        ///     Gets or sets the color of a pixel at the index.
-        /// </summary>
-        /// <param name="index">The index of the pixel.</param>
-        /// <returns>The color of the pixel at the index.</returns>
-        public Color this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= Data.Length)
-                {
-                    if (IgnoreOutOfRange) return DefaultColor;
-                    else throw new ArgumentOutOfRangeException();
-                }
-                else return Color.FromArgb(Data[index]);
-            }
-            set
-            {
-                if (index < 0 || index >= Data.Length && !IgnoreOutOfRange)
-                    throw new ArgumentOutOfRangeException();
-                Data[index] = value.ToArgb();
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the color of a pixel at the X and Y coordinates.
-        /// </summary>
-        /// <param name="x">The X coordinate of the pixel.</param>
-        /// <param name="y">The Y coordinate of the pixel.</param>
-        /// <returns>The color of the pixel at the X and Y coordinates.</returns>
-        public Color this[int x, int y]
-        {
-            get
-            {
-                try
-                {
-                    return this[PointToIndex(x, y)];
-                }
-                catch (ArgumentOutOfRangeException e)
-                {
-                    if (IgnoreOutOfRange) return DefaultColor;
-                    else throw e;
-                }
-            }
-            set
-            {
-                try
-                {
-                    this[PointToIndex(x, y)] = value;
-                }
-                catch (ArgumentOutOfRangeException e)
-                {
-                    if (!IgnoreOutOfRange) throw e;
-                }
-            }
-        }
-        /// <summary>
-        ///     Gets or sets the color of a pixel at a specific point.
-        /// </summary>
-        /// <param name="pt">The point of the pixel.</param>
-        /// <returns>The color of the pixel at a specific point.</returns>
-        public Color this[Point pt]
-        {
-            get { return this[pt.X, pt.Y]; }
-            set { this[pt.X, pt.Y] = value; }
         }
 
         /// <summary>
