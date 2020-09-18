@@ -24,7 +24,6 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
@@ -143,13 +142,6 @@ namespace Hazdryx.Drawing
                 }
             }
         }
-        private int PointToIndex(int x, int y)
-        {
-            if (x < 0 || x >= Width || y < 0 || y >= Height) 
-                throw new ArgumentOutOfRangeException();
-            else
-                return x + y * Width;
-        }
         /// <summary>
         ///     Gets or sets the color of a pixel at a specific point.
         /// </summary>
@@ -159,6 +151,119 @@ namespace Hazdryx.Drawing
         {
             get { return this[pt.X, pt.Y]; }
             set { this[pt.X, pt.Y] = value; }
+        }
+
+        /// <summary>
+        ///     Gets the color of a pixel.
+        /// </summary>
+        /// <param name="index">Index of the pixel.</param>
+        /// <returns></returns>
+        public Color Get(int index) => Color.FromArgb(Data[index]);
+        /// <summary>
+        ///     Gets the color of a pixel.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="color"></param>
+        /// <returns>Whether the color was successfully obtained.</returns>
+        public bool TryGet(int index, out Color color)
+        {
+            try
+            {
+                color = Color.FromArgb(Data[index]);
+                return true;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                color = Color.Empty;
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the color of a pixel.
+        /// </summary>
+        /// <param name="index">Index of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        public void Set(int index, Color color) => Data[index] = color.ToArgb();
+        /// <summary>
+        ///     Sets the color of a pixel.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="color"></param>
+        /// <returns>Whether the color was set.</returns>
+        public bool TrySet(int index, Color color)
+        {
+            try
+            {
+                Data[index] = color.ToArgb();
+                return true;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return false;
+            }
+        }
+
+        private int PointToIndex(int x, int y)
+        {
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
+                throw new ArgumentOutOfRangeException();
+            else
+                return x + y * Width;
+        }
+        /// <summary>
+        ///     Gets color of a pixel.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <returns></returns>
+        public Color Get(int x, int y) => Color.FromArgb(Data[PointToIndex(x, y)]);
+        /// <summary>
+        ///     Gets color of a pixel.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <param name="color">Default color if out of range.</param>
+        /// <returns>Whether the color was successfully obtained.</returns>
+        public bool TryGet(int x, int y, out Color color)
+        {
+            try
+            {
+                color = Color.FromArgb(Data[PointToIndex(x, y)]);
+                return true;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                color = Color.Empty;
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Sets the color of a pixel.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        public void Set(int x, int y, Color color) => Data[PointToIndex(x, y)] = color.ToArgb();
+        /// <summary>
+        ///     Sets the color of a pixel.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <param name="color">New color of the pixel.</param>
+        /// <returns>Whether the color was set.</returns>
+        public bool TrySetI(int x, int y, Color color)
+        {
+            try
+            {
+                Data[PointToIndex(x, y)] = color.ToArgb();
+                return true;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
