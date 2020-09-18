@@ -200,7 +200,7 @@ namespace Hazdryx.Drawing
         /// <param name="y">Y component of the pixel.</param>
         /// <param name="color">New color of the pixel.</param>
         /// <returns>Whether the color was set.</returns>
-        public bool TrySetI(int x, int y, Color color)
+        public bool TrySet(int x, int y, Color color)
         {
             try
             {
