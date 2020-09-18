@@ -96,7 +96,7 @@ namespace Hazdryx.Drawing.Benchmark
             Rectangle bounds = new Rectangle(150, 150, bmp.Width - 300, bmp.Height - 300);
             float barWidth = bmp.Width / 20;
             float barSpacing = bmp.Width / (float) Benchmarks.Count;
-            float maxValue = 300000000;
+            float maxValue = 325000000;
 
             // Start Drawing.
             using (Graphics g = Graphics.FromImage(bmp.BaseBitmap))

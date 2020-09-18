@@ -116,8 +116,30 @@ namespace Hazdryx.Drawing.Benchmark
                 }
             });
 
-            // FastBitmap Int32 Benchmark
-            pt.AddBenchmark("FastBitmap Int32", () =>
+            // FastBitmap Int32 Coord Benchmark
+            pt.AddBenchmark("FastBitmap Int32 Coord", () =>
+            {
+                using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
+                using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
+                {
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+                    for (int x = 0; x < dst.Width; x++)
+                    {
+                        for (int y = 0; y < dst.Height; y++)
+                        {
+                            dst.SetI(x, y, src.GetI(x, y));
+                        }
+                    }
+                    sw.Stop();
+
+                    dst.Save("FastBitmapInt32Coord.jpg");
+                    return src.Length / sw.Elapsed.TotalSeconds;
+                }
+            });
+
+            // FastBitmap Int32 Index Benchmark
+            pt.AddBenchmark("FastBitmap Int32 Index", () =>
             {
                 using (FastBitmap src = FastBitmap.FromFile("image.jpg"))
                 using (FastBitmap dst = new FastBitmap(src.Width, src.Height))
@@ -126,11 +148,11 @@ namespace Hazdryx.Drawing.Benchmark
                     sw.Start();
                     for (int i = 0; i < dst.Length; i++)
                     {
-                        src.Data[i] = dst.Data[i];
+                        dst.SetI(i, src.GetI(i));
                     }
                     sw.Stop();
 
-                    dst.Save("FastBitmapInt32.jpg");
+                    dst.Save("FastBitmapInt32Index.jpg");
                     return src.Length / sw.Elapsed.TotalSeconds;
                 }
             });
