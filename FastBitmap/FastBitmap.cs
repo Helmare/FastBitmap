@@ -36,7 +36,7 @@ namespace Hazdryx.Drawing
     ///     This class is based on the work from @SaxxonPike on Stackoverflow:
     ///     https://stackoverflow.com/questions/24701703/c-sharp-faster-alternatives-to-setpixel-and-getpixel-for-bitmaps-for-windows-f
     /// </summary>
-    public class FastBitmap : IDisposable, ICloneable
+    public class FastBitmap : ICloneable, IDisposable
     {
         /// <summary>
         ///     Gets the array which allows direct access to pixel data in Int32 (ARGB) form.
@@ -74,7 +74,6 @@ namespace Hazdryx.Drawing
             this.Width = width;
             this.Height = height;
         }
-
         /// <summary>
         ///     Initializes a bitmap and then draws the image using GDI+.
         /// </summary>
@@ -149,7 +148,6 @@ namespace Hazdryx.Drawing
             if (y < 0 || y >= Height) throw new ArgumentOutOfRangeException();
             return x + y * Width;
         }
-
         /// <summary>
         ///     Gets or sets the color of a pixel at a specific point.
         /// </summary>
@@ -159,6 +157,66 @@ namespace Hazdryx.Drawing
         {
             get { return this[pt.X, pt.Y]; }
             set { this[pt.X, pt.Y] = value; }
+        }
+
+        /// <summary>
+        ///     Gets color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="index">Index of the pixel.</param>
+        /// <returns></returns>
+        public int GetI(int index) => Data[index];
+        /// <summary>
+        ///     Gets color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="index">Index of the pixel.</param>
+        /// <param name="color">Color of the pixel in ARGB32 form.</param>
+        /// <returns>Whether the color was successfully obtained.</returns>
+        public bool TryGetI(int index, out int color)
+        {
+            try
+            {
+                color = Data[index];
+                return true;
+            }
+            catch(ArgumentOutOfRangeException)
+            {
+                color = 0;
+                return false;
+            }
+        }
+
+        /// <summary>
+        ///     Gets color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <returns></returns>
+        public int GetI(int x, int y)
+        {
+            if (x < 0 || x > Width || y < 0 || y > Height) 
+                throw new ArgumentOutOfRangeException();
+            else 
+                return Data[PointToIndex(x, y)];
+        }
+        /// <summary>
+        ///     Gets color of a pixel in ARGB32 form.
+        /// </summary>
+        /// <param name="x">X component of the pixel.</param>
+        /// <param name="y">Y component of the pixel.</param>
+        /// <param name="color">Default color if out of range.</param>
+        /// <returns>Whether the color was successfully obtained.</returns>
+        public bool TryGetI(int x, int y, out int color)
+        {
+            if (x < 0 || x > Width || y < 0 || y > Height)
+            {
+                color = 0;
+                return false;
+            }
+            else
+            {
+                color = Data[PointToIndex(x, y)];
+                return true;
+            }
         }
 
         /// <summary>
@@ -228,26 +286,22 @@ namespace Hazdryx.Drawing
         }
 
         /// <summary>
-        ///     Frees pinned resources and disposes base bitmap.
-        /// </summary>
-        public void Dispose()
-        {
-            BitsHandle.Free();
-            BaseBitmap.Dispose();
-        }
-
-        /// <summary>
         ///     Clones the FastBitmap into another FastBitmap.
         /// </summary>
         /// <returns></returns>
         public object Clone()
         {
             FastBitmap clone = new FastBitmap(Width, Height);
-            for(int i = 0; i < Length; i++)
-            {
-                clone.Data[i] = Data[i];
-            }
+            Buffer.BlockCopy(Data, 0, clone.Data, 0, Length);
             return clone;
+        }
+        /// <summary>
+        ///     Frees pinned resources and disposes base bitmap.
+        /// </summary>
+        public void Dispose()
+        {
+            BitsHandle.Free();
+            BaseBitmap.Dispose();
         }
 
         /// <summary>
