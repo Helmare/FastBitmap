@@ -151,7 +151,14 @@ namespace Hazdryx.Drawing
             }
         }
 
-        private int PointToIndex(int x, int y)
+        /// <summary>
+        ///     Converts an X and Y coordinates to an index. If X and Y are out of bounds,
+        ///     an exception is thrown.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int PointToIndex(int x, int y)
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height)
                 throw new ArgumentOutOfRangeException();
