@@ -1,7 +1,7 @@
 ﻿/*
     MIT License
 
-    Copyright(c) 2020 Christopher Bishop
+    Copyright(c) 2021 Christopher Bishop
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -119,7 +119,7 @@ namespace Hazdryx.Drawing
                 color = Color.FromArgb(Data[index]);
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 color = _defaultColor;
                 return false;
@@ -145,7 +145,7 @@ namespace Hazdryx.Drawing
                 Data[index] = color.ToArgb();
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 return false;
             }
@@ -239,7 +239,7 @@ namespace Hazdryx.Drawing
                 color = Data[index];
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch(IndexOutOfRangeException)
             {
                 color = _defaultArgb;
                 return false;
@@ -265,7 +265,7 @@ namespace Hazdryx.Drawing
                 Data[index] = color;
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch(IndexOutOfRangeException)
             {
                 return false;
             }
