@@ -1,6 +1,5 @@
 using Hazdryx.Drawing;
 using System;
-using System.Drawing;
 using Xunit;
 
 namespace FastBitmapTests
