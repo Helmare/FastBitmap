@@ -1,5 +1,8 @@
 using Hazdryx.Drawing;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 using Xunit;
 
 namespace FastBitmapTests
@@ -173,5 +176,18 @@ namespace FastBitmapTests
             Assert.Equal(color, expected ? bmp.GetI(x, y) : color);
         }
         #endregion
+
+        [Fact]
+        public void Clone_ShouldCreateNewCopy()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = (FastBitmap) src.Clone();
+
+            Assert.Equal(src.Length, dst.Length);
+            for (int i = 0; i < src.Length; i++)
+            {
+                Assert.Equal(src.Data[i], dst.Data[i]);
+            }
+        }
     }
 }
