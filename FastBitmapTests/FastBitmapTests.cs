@@ -208,6 +208,23 @@ namespace FastBitmapTests
             Assert.Equal(ColorData[10], dst.Data[7]);
             Assert.Equal(ColorData[11], dst.Data[8]);
         }
+        [Theory]
+        [InlineData(0, 0, -1, 0, 2, 2, 2, new int[] { 0, -65536, 0, -16777216 })]
+        [InlineData(0, -1, 1, 1, 2, 2, 2, new int[] { 2131099397, 2131035647, 0, 0 })]
+        [InlineData(-1, 0, -2, 2, 2, 2, 0, new int[] { 0, 0, 0, 0 })]
+        [InlineData(1, 1, 0, 5, 2, 2, 0, new int[] { 0, 0, 0, 0 })]
+        [InlineData(0, 0, -1, 1, 3, 4, 2, new int[] { 0, -16777216, 0, 2147419397 })]
+        public void CopyTo_ShouldCopyAPartialRegion(int dstX, int dstY, int x, int y, int width, int height, int expected, int[] expectedData)
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(2, 2);
+
+            Assert.Equal(expected, src.CopyTo(dst, dstX, dstY, x, y, width, height));
+            for (int i = 0; i < dst.Length; i++)
+            {
+                Assert.Equal(expectedData[i], dst.Data[i]);
+            }
+        }
         [Fact]
         public void CopyTo_ShouldCopyARegion()
         {

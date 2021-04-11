@@ -350,9 +350,48 @@ namespace Hazdryx.Drawing
         /// <param name="y"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        /// <returns>Number of pixels copied to the destination.</returns>
-        public void CopyTo(FastBitmap dst, int dstX, int dstY, int x, int y, int width, int height)
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst, int dstX, int dstY, int x, int y, int width, int height)
         {
+            // Adjust source coordinates based on dst coodinates.
+            if (dstX < 0)
+            {
+                x -= dstX;
+                width += dstX;
+                dstX = 0;
+            }
+            if (dstY < 0)
+            {
+                y -= dstY;
+                height += dstY;
+                dstY = 0;
+            }
+            // Adjust dst coordinates based on source coordinates.
+            if (x < 0)
+            {
+                dstX -= x;
+                width += x;
+                x = 0;
+            }
+            if (y < 0)
+            {
+                dstY -= y;
+                height += y;
+                y = 0;
+            }
+
+            // Check if anything is being copied.
+            if (width <= 0 || height <= 0 ||
+                x >= Width || y >= Height ||
+                dstX >= dst.Width || dstY >= dst.Height) return 0;
+
+            // Adjust width to not go out of bounds.
+            if (dst.Width < dstX + width) width = dst.Width - dstX;
+            if (Width < x + width) width = Width - x;
+            // Adjust height to not go out of bounds.
+            if (dst.Height < dstY + height) height = dst.Height - dstY;
+            if (Height < y + height) height = Height - y;
+
             // Copy each line.
             int srcOffset = PointToIndex(x, y);
             int dstOffset = dst.PointToIndex(dstX, dstY);
@@ -362,6 +401,7 @@ namespace Hazdryx.Drawing
                 srcOffset += Width;
                 dstOffset += dst.Width;
             }
+            return width * height;
         }
         /// <summary>
         ///     Copies a region of this bitmap to the destination bitmap.
@@ -371,9 +411,10 @@ namespace Hazdryx.Drawing
         /// <param name="y"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void CopyTo(FastBitmap dst, int x, int y, int width, int height)
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst, int x, int y, int width, int height)
         {
-            CopyTo(dst, 0, 0, x, y, width, height);
+            return CopyTo(dst, 0, 0, x, y, width, height);
         }
         /// <summary>
         ///     Copies a region of this bitmap with a rect of {x, y, dst.Width, dst.Height}
@@ -382,9 +423,10 @@ namespace Hazdryx.Drawing
         /// <param name="dst"></param>
         /// <param name="x">The X coordiante of the region.</param>
         /// <param name="y">The Y coordinate of the region.</param>
-        public void CopyTo(FastBitmap dst, int x, int y)
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst, int x, int y)
         {
-            CopyTo(dst, 0, 0, x, y, dst.Width, dst.Height);
+            return CopyTo(dst, 0, 0, x, y, dst.Width, dst.Height);
         }
         /// <summary>
         ///     Copies all the color data to the new bitmap.
@@ -393,9 +435,11 @@ namespace Hazdryx.Drawing
         ///     bitmap and may have unwanted side effects.
         /// </summary>
         /// <param name="dst"></param>
-        public void CopyTo(FastBitmap dst)
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst)
         {
             Buffer.BlockCopy(Data, 0, dst.Data, 0, Length * 4);
+            return Length;
         }
 
         /// <summary>
