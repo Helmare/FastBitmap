@@ -340,11 +340,12 @@ namespace Hazdryx.Drawing
             Buffer.BlockCopy(Data, 0, dst.Data, 0, Length * 4);
         }
         /// <summary>
-        ///     Copies a region of the color data to the new bitmap.
+        ///     Copies a region of this bitmap with a rect of {x, y, dst.Width, dst.Height}
+        ///     to the destination.
         /// </summary>
         /// <param name="dst"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">The X coordiante of the region.</param>
+        /// <param name="y">tHE Y coordinate of the region.</param>
         public void CopyRegionTo(FastBitmap dst, int x, int y)
         {
             int offset = PointToIndex(x, y);
@@ -352,6 +353,18 @@ namespace Hazdryx.Drawing
             {
                 Buffer.BlockCopy(Data, offset * 4, dst.Data, i * dst.Width * 4, dst.Width * 4);
                 offset += Width;
+            }
+        }
+        public void CopyRegionTo(FastBitmap dst, int dstX, int dstY, int x, int y, int width, int height)
+        {
+            int srcOffset = PointToIndex(x, y);
+            int dstOffset = dst.PointToIndex(dstX, dstY);
+
+            for (int i = 0; i < height; i++)
+            {
+                Buffer.BlockCopy(Data, srcOffset * 4, dst.Data, dstOffset * 4, width * 4);
+                srcOffset += Width;
+                dstOffset += dst.Width;
             }
         }
         /// <summary>
