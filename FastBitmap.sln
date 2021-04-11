@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastBitmap", "FastBitmap\FastBitmap.csproj", "{2954C5AF-763E-4F08-94E1-99A166129410}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkApp", "BenchmarkApp\BenchmarkApp.csproj", "{E83C2175-8445-44D0-9B9F-26A398C801B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastBitmap.Benchmark", "BenchmarkApp\FastBitmap.Benchmark.csproj", "{E83C2175-8445-44D0-9B9F-26A398C801B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastBitmapTests", "FastBitmapTests\FastBitmapTests.csproj", "{5D80CFFF-01CC-4446-85C9-A7C1D017C39C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastBitmap.Tests", "FastBitmapTests\FastBitmap.Tests.csproj", "{5D80CFFF-01CC-4446-85C9-A7C1D017C39C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
