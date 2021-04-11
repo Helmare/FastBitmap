@@ -109,10 +109,10 @@ namespace FastBitmapTests
         [InlineData(10, 2)]
         [InlineData(1, -6)]
         [InlineData(2, 4)]
-        public void PointToIndex_ShouldThrowException(int x, int y)
+        public void PointToIndex_ShouldReturnNegativeOne(int x, int y)
         {
             FastBitmap bmp = SetupBitmap();
-            Assert.Throws<ArgumentOutOfRangeException>(() => bmp.PointToIndex(x, y));
+            Assert.Equal(-1, bmp.PointToIndex(x, y));
         }
         #endregion
 
@@ -134,7 +134,7 @@ namespace FastBitmapTests
         public void GetI_Coord_ShouldThrowException(int x, int y)
         {
             FastBitmap bmp = SetupBitmap();
-            Assert.Throws<ArgumentOutOfRangeException>(() => bmp.GetI(x, y));
+            Assert.Throws<IndexOutOfRangeException>(() => bmp.GetI(x, y));
         }
         [Theory]
         [InlineData(0, 0, true, -65536)]
@@ -165,7 +165,7 @@ namespace FastBitmapTests
         public void SetI_Coord_ShouldThrowException(int x, int y)
         {
             FastBitmap bmp = SetupBitmap();
-            Assert.Throws<ArgumentOutOfRangeException>(() => bmp.SetI(x, y, -1));
+            Assert.Throws<IndexOutOfRangeException>(() => bmp.SetI(x, y, -1));
         }
         [Theory]
         [InlineData(1, 1, 100, true)]
@@ -181,8 +181,59 @@ namespace FastBitmapTests
         }
         #endregion
 
+        #region Clear Tests
         [Fact]
-        public void CopyTo_ShouldCopyAllPixelsToFastBitmap()
+        public void Clear_ShouldMakeAllPixelsZero()
+        {
+            FastBitmap bmp = SetupBitmap();
+            bmp.Clear();
+
+            for (int i = 0; i < bmp.Length; i++)
+            {
+                Assert.Equal(0, bmp.Data[i]);
+            }
+        }
+        #endregion
+
+        #region CopyTo Tests
+        [Fact]
+        public void CopyTo_ShouldCopyARegionWhichIsOffset()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(3, 3);
+
+            src.CopyTo(dst, 1, 1, 1, 2, 2, 2);
+            Assert.Equal(ColorData[7], dst.Data[4]);
+            Assert.Equal(ColorData[8], dst.Data[5]);
+            Assert.Equal(ColorData[10], dst.Data[7]);
+            Assert.Equal(ColorData[11], dst.Data[8]);
+        }
+        [Fact]
+        public void CopyTo_ShouldCopyARegion()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(3, 3);
+
+            src.CopyTo(dst, 1, 2, 2, 2);
+            Assert.Equal(ColorData[7], dst.Data[0]);
+            Assert.Equal(ColorData[8], dst.Data[1]);
+            Assert.Equal(ColorData[10], dst.Data[3]);
+            Assert.Equal(ColorData[11], dst.Data[4]);
+        }
+        [Fact]
+        public void CopyTo_ShouldCopyASimpleRegion()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(2, 2);
+
+            src.CopyTo(dst, 1, 1);
+            Assert.Equal(ColorData[4], dst.Data[0]);
+            Assert.Equal(ColorData[5], dst.Data[1]);
+            Assert.Equal(ColorData[7], dst.Data[2]);
+            Assert.Equal(ColorData[8], dst.Data[3]);
+        }
+        [Fact]
+        public void CopyTo_ShouldCopyAllPixels()
         {
             FastBitmap src = SetupBitmap();
             FastBitmap dst = new FastBitmap(src.Width, src.Height);
@@ -193,32 +244,9 @@ namespace FastBitmapTests
                 Assert.Equal(src.Data[i], dst.Data[i]);
             }
         }
-        [Fact]
-        public void CopyRegionTo_ShouldCopyASimpleRegionOfPixelsToFastBitmap()
-        {
-            FastBitmap src = SetupBitmap();
-            FastBitmap dst = new FastBitmap(2, 2);
+        #endregion
 
-            src.CopyRegionTo(dst, 1, 1);
-            Assert.Equal(ColorData[4], dst.Data[0]);
-            Assert.Equal(ColorData[5], dst.Data[1]);
-            Assert.Equal(ColorData[7], dst.Data[2]);
-            Assert.Equal(ColorData[8], dst.Data[3]);
-        }
-
-        [Fact]
-        public void CopyRegionTo_ShouldCopyARegionOfPixelsToFastBitmap()
-        {
-            FastBitmap src = SetupBitmap();
-            FastBitmap dst = new FastBitmap(3, 3);
-
-            src.CopyRegionTo(dst, 1, 1, 1, 2, 2, 2);
-            Assert.Equal(ColorData[7], dst.Data[4]);
-            Assert.Equal(ColorData[8], dst.Data[5]);
-            Assert.Equal(ColorData[10], dst.Data[7]);
-            Assert.Equal(ColorData[11], dst.Data[8]);
-        }
-
+        #region Clone Tests
         [Fact]
         public void Clone_ShouldCreateNewCopy()
         {
@@ -231,5 +259,6 @@ namespace FastBitmapTests
                 Assert.Equal(src.Data[i], dst.Data[i]);
             }
         }
+        #endregion
     }
 }
