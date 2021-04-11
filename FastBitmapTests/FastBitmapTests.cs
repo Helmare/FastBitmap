@@ -22,11 +22,15 @@ namespace FastBitmapTests
             2147419397, // Mild Red
             2131099397, // Mild Green
             2131035647, // Mild Blue
+
+            -1,         // White
+            -16777216,  // Black
+            -8421505,   // Grey
         };
         private static FastBitmap SetupBitmap()
         {
-            FastBitmap bmp = new FastBitmap(3, 3);
-            Array.Copy(ColorData, bmp.Data, 9);
+            FastBitmap bmp = new FastBitmap(3, 4);
+            Array.Copy(ColorData, bmp.Data, 12);
             return bmp;
         }
         
@@ -70,7 +74,7 @@ namespace FastBitmapTests
         }
         [Theory]
         [InlineData(-10, 240)]
-        [InlineData(9, -50)]
+        [InlineData(12, -50)]
         public void SetI_ShouldThrowException(int index, int color)
         {
             FastBitmap bmp = SetupBitmap();
@@ -104,7 +108,7 @@ namespace FastBitmapTests
         [InlineData(-1, 0)]
         [InlineData(10, 2)]
         [InlineData(1, -6)]
-        [InlineData(2, 3)]
+        [InlineData(2, 4)]
         public void PointToIndex_ShouldThrowException(int x, int y)
         {
             FastBitmap bmp = SetupBitmap();
@@ -190,7 +194,7 @@ namespace FastBitmapTests
             }
         }
         [Fact]
-        public void CopyRegionTo_ShouldCopyARegionOfPixelsToFastBitmap()
+        public void CopyRegionTo_ShouldCopyASimpleRegionOfPixelsToFastBitmap()
         {
             FastBitmap src = SetupBitmap();
             FastBitmap dst = new FastBitmap(2, 2);
@@ -200,6 +204,19 @@ namespace FastBitmapTests
             Assert.Equal(ColorData[5], dst.Data[1]);
             Assert.Equal(ColorData[7], dst.Data[2]);
             Assert.Equal(ColorData[8], dst.Data[3]);
+        }
+
+        [Fact]
+        public void CopyRegionTo_ShouldCopyARegionOfPixelsToFastBitmap()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(3, 3);
+
+            src.CopyRegionTo(dst, 1, 1, 1, 2, 2, 2);
+            Assert.Equal(ColorData[7], dst.Data[4]);
+            Assert.Equal(ColorData[8], dst.Data[5]);
+            Assert.Equal(ColorData[10], dst.Data[7]);
+            Assert.Equal(ColorData[11], dst.Data[8]);
         }
 
         [Fact]
