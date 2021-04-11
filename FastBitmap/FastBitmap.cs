@@ -24,6 +24,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace Hazdryx.Drawing
@@ -172,6 +173,7 @@ namespace Hazdryx.Drawing
         /// <param name="y">Y component of the pixel.</param>
         /// <returns></returns>
         public Color Get(int x, int y) => Color.FromArgb(Data[PointToIndex(x, y)]);
+
         /// <summary>
         ///     Gets color of a pixel.
         /// </summary>
@@ -327,6 +329,52 @@ namespace Hazdryx.Drawing
         }
 
         /// <summary>
+        ///     Copies all the color data to the new bitmap.
+        ///     
+        ///     Notice: This method can be called on an incompatable
+        ///     bitmap and may have unwanted side effects.
+        /// </summary>
+        /// <param name="dst"></param>
+        public void CopyTo(FastBitmap dst)
+        {
+            Buffer.BlockCopy(Data, 0, dst.Data, 0, Length * 4);
+        }
+        /// <summary>
+        ///     Copies a region of the color data to the new bitmap.
+        /// </summary>
+        /// <param name="dst"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void CopyRegionTo(FastBitmap dst, int x, int y)
+        {
+            int offset = PointToIndex(x, y);
+            for (int i = 0; i < dst.Height; i++)
+            {
+                Buffer.BlockCopy(Data, offset * 4, dst.Data, i * dst.Width * 4, dst.Width * 4);
+                offset += Width;
+            }
+        }
+        /// <summary>
+        ///     Clones the FastBitmap into another FastBitmap.
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            FastBitmap clone = new FastBitmap(Width, Height);
+            CopyTo(clone);
+            return clone;
+        }
+
+        /// <summary>
+        ///     Frees pinned resources and disposes base bitmap.
+        /// </summary>
+        public void Dispose()
+        {
+            BitsHandle.Free();
+            BaseBitmap.Dispose();
+        }
+
+        /// <summary>
         ///     Saves the FastBitmap to a file.
         /// </summary>
         /// <param name="filename">The path of the image file.</param>
@@ -337,26 +385,6 @@ namespace Hazdryx.Drawing
         /// <param name="filename">The path of the image file.</param>
         /// <param name="format">The format of the image file.</param>
         public void Save(string filename, ImageFormat format) => BaseBitmap.Save(filename, format);
-
-        /// <summary>
-        ///     Clones the FastBitmap into another FastBitmap.
-        /// </summary>
-        /// <returns></returns>
-        public object Clone()
-        {
-            FastBitmap clone = new FastBitmap(Width, Height);
-            Buffer.BlockCopy(Data, 0, clone.Data, 0, Length * 4);
-            return clone;
-        }
-        /// <summary>
-        ///     Frees pinned resources and disposes base bitmap.
-        /// </summary>
-        public void Dispose()
-        {
-            BitsHandle.Free();
-            BaseBitmap.Dispose();
-        }
-
         /// <summary>
         ///     Loads a image file into a FastBitmap.
         /// </summary>

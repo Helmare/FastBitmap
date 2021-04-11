@@ -178,6 +178,31 @@ namespace FastBitmapTests
         #endregion
 
         [Fact]
+        public void CopyTo_ShouldCopyAllPixelsToFastBitmap()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(src.Width, src.Height);
+
+            src.CopyTo(dst);
+            for (int i = 0; i < src.Length; i++)
+            {
+                Assert.Equal(src.Data[i], dst.Data[i]);
+            }
+        }
+        [Fact]
+        public void CopyRegionTo_ShouldCopyARegionOfPixelsToFastBitmap()
+        {
+            FastBitmap src = SetupBitmap();
+            FastBitmap dst = new FastBitmap(2, 2);
+
+            src.CopyRegionTo(dst, 1, 1);
+            Assert.Equal(ColorData[4], dst.Data[0]);
+            Assert.Equal(ColorData[5], dst.Data[1]);
+            Assert.Equal(ColorData[7], dst.Data[2]);
+            Assert.Equal(ColorData[8], dst.Data[3]);
+        }
+
+        [Fact]
         public void Clone_ShouldCreateNewCopy()
         {
             FastBitmap src = SetupBitmap();
