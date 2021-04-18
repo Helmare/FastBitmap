@@ -1,7 +1,7 @@
 ﻿/*
     MIT License
 
-    Copyright(c) 2020 Christopher Bishop
+    Copyright(c) 2021 Christopher Bishop
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,14 @@ namespace Hazdryx.Drawing
         ///     Gets the array which allows direct access to pixel data in Int32 (ARGB) form.
         /// </summary>
         public int[] Data { get; }
+        /// <summary>
+        ///     Gets the Garbage Collector handle for the pixel data.
+        /// </summary>
         protected GCHandle BitsHandle { get; }
+        /// <summary>
+        ///     A cache for the clear function.
+        /// </summary>
+        private int[] _clearCache = null;
 
         /// <summary>
         ///     Gets the underlying bitmap this object is wrapping.
@@ -119,7 +126,7 @@ namespace Hazdryx.Drawing
                 color = Color.FromArgb(Data[index]);
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 color = _defaultColor;
                 return false;
@@ -145,18 +152,22 @@ namespace Hazdryx.Drawing
                 Data[index] = color.ToArgb();
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 return false;
             }
         }
 
-        private int PointToIndex(int x, int y)
+        /// <summary>
+        ///     Converts an X and Y coordinates to an index. If X and Y are out of bounds,
+        ///     an exception is thrown.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int PointToIndex(int x, int y)
         {
-            if (x < 0 || x >= Width || y < 0 || y >= Height)
-                throw new ArgumentOutOfRangeException();
-            else
-                return x + y * Width;
+            return (x < 0 || x >= Width || y < 0 || y >= Height) ? -1 : x + y * Width;
         }
         /// <summary>
         ///     Gets color of a pixel.
@@ -165,6 +176,7 @@ namespace Hazdryx.Drawing
         /// <param name="y">Y component of the pixel.</param>
         /// <returns></returns>
         public Color Get(int x, int y) => Color.FromArgb(Data[PointToIndex(x, y)]);
+
         /// <summary>
         ///     Gets color of a pixel.
         /// </summary>
@@ -179,7 +191,7 @@ namespace Hazdryx.Drawing
                 color = Color.FromArgb(Data[PointToIndex(x, y)]);
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 color = _defaultColor;
                 return false;
@@ -207,7 +219,7 @@ namespace Hazdryx.Drawing
                 Data[PointToIndex(x, y)] = color.ToArgb();
                 return true;
             }
-            catch (ArgumentOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 return false;
             }
@@ -232,7 +244,7 @@ namespace Hazdryx.Drawing
                 color = Data[index];
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch(IndexOutOfRangeException)
             {
                 color = _defaultArgb;
                 return false;
@@ -258,7 +270,7 @@ namespace Hazdryx.Drawing
                 Data[index] = color;
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch(IndexOutOfRangeException)
             {
                 return false;
             }
@@ -285,7 +297,7 @@ namespace Hazdryx.Drawing
                 color = Data[PointToIndex(x, y)];
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch(IndexOutOfRangeException)
             {
                 color = _defaultArgb;
                 return false;
@@ -313,10 +325,141 @@ namespace Hazdryx.Drawing
                 Data[PointToIndex(x, y)] = color;
                 return true;
             }
-            catch(ArgumentOutOfRangeException)
+            catch(IndexOutOfRangeException)
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        ///     Sets all pixels values to 0 (transparent).
+        /// </summary>
+        public void Clear()
+        {
+            if (_clearCache == null) _clearCache = new int[Length];
+            Buffer.BlockCopy(_clearCache, 0, Data, 0, Length * 4);
+        }
+
+        /// <summary>
+        ///     Copies a region of this bitmap to the destination bitmap.
+        /// </summary>
+        /// <param name="dst">Destination bitmap.</param>
+        /// <param name="dstX"></param>
+        /// <param name="dstY"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst, int dstX, int dstY, int x, int y, int width, int height)
+        {
+            // Adjust source coordinates based on dst coodinates.
+            if (dstX < 0)
+            {
+                x -= dstX;
+                width += dstX;
+                dstX = 0;
+            }
+            if (dstY < 0)
+            {
+                y -= dstY;
+                height += dstY;
+                dstY = 0;
+            }
+            // Adjust dst coordinates based on source coordinates.
+            if (x < 0)
+            {
+                dstX -= x;
+                width += x;
+                x = 0;
+            }
+            if (y < 0)
+            {
+                dstY -= y;
+                height += y;
+                y = 0;
+            }
+
+            // Check if anything is being copied.
+            if (width <= 0 || height <= 0 ||
+                x >= Width || y >= Height ||
+                dstX >= dst.Width || dstY >= dst.Height) return 0;
+
+            // Adjust width to not go out of bounds.
+            if (dst.Width < dstX + width) width = dst.Width - dstX;
+            if (Width < x + width) width = Width - x;
+            // Adjust height to not go out of bounds.
+            if (dst.Height < dstY + height) height = dst.Height - dstY;
+            if (Height < y + height) height = Height - y;
+
+            // Copy each line.
+            int srcOffset = PointToIndex(x, y);
+            int dstOffset = dst.PointToIndex(dstX, dstY);
+            for (int i = 0; i < height; i++)
+            {
+                Buffer.BlockCopy(Data, srcOffset * 4, dst.Data, dstOffset * 4, width * 4);
+                srcOffset += Width;
+                dstOffset += dst.Width;
+            }
+            return width * height;
+        }
+        /// <summary>
+        ///     Copies a region of this bitmap to the destination bitmap.
+        /// </summary>
+        /// <param name="dst"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst, int x, int y, int width, int height)
+        {
+            return CopyTo(dst, 0, 0, x, y, width, height);
+        }
+        /// <summary>
+        ///     Copies a region of this bitmap with a rect of {x, y, dst.Width, dst.Height}
+        ///     to the destination.
+        /// </summary>
+        /// <param name="dst"></param>
+        /// <param name="x">The X coordiante of the region.</param>
+        /// <param name="y">The Y coordinate of the region.</param>
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst, int x, int y)
+        {
+            return CopyTo(dst, 0, 0, x, y, dst.Width, dst.Height);
+        }
+        /// <summary>
+        ///     Copies all the color data to the new bitmap.
+        ///     
+        ///     Notice: This method can be called on an incompatable
+        ///     bitmap and may have unwanted side effects.
+        /// </summary>
+        /// <param name="dst"></param>
+        /// <returns>The number of pixels copied.</returns>
+        public int CopyTo(FastBitmap dst)
+        {
+            Buffer.BlockCopy(Data, 0, dst.Data, 0, Length * 4);
+            return Length;
+        }
+
+        /// <summary>
+        ///     Clones the FastBitmap into another FastBitmap.
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            FastBitmap clone = new FastBitmap(Width, Height);
+            CopyTo(clone);
+            return clone;
+        }
+
+        /// <summary>
+        ///     Frees pinned resources and disposes base bitmap.
+        /// </summary>
+        public void Dispose()
+        {
+            BitsHandle.Free();
+            BaseBitmap.Dispose();
         }
 
         /// <summary>
@@ -330,26 +473,6 @@ namespace Hazdryx.Drawing
         /// <param name="filename">The path of the image file.</param>
         /// <param name="format">The format of the image file.</param>
         public void Save(string filename, ImageFormat format) => BaseBitmap.Save(filename, format);
-
-        /// <summary>
-        ///     Clones the FastBitmap into another FastBitmap.
-        /// </summary>
-        /// <returns></returns>
-        public object Clone()
-        {
-            FastBitmap clone = new FastBitmap(Width, Height);
-            Buffer.BlockCopy(Data, 0, clone.Data, 0, Length * 4);
-            return clone;
-        }
-        /// <summary>
-        ///     Frees pinned resources and disposes base bitmap.
-        /// </summary>
-        public void Dispose()
-        {
-            BitsHandle.Free();
-            BaseBitmap.Dispose();
-        }
-
         /// <summary>
         ///     Loads a image file into a FastBitmap.
         /// </summary>
