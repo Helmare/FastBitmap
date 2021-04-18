@@ -1,7 +1,7 @@
 ﻿/* 
     MIT License
 
-    Copyright(c) 2020 Christopher Bishop
+    Copyright(c) 2021 Christopher Bishop
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ namespace Hazdryx.Drawing.Benchmark
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("FastBitmap (v1.1.0) Benchmarking App");
+            Console.WriteLine("FastBitmap (v1.2.0) Benchmarking App");
             Console.WriteLine("------------------------------------------------");
 
             //

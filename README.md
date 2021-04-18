@@ -32,3 +32,22 @@ using (FastBitmap bmp = FastBitmap.FromFile("image.png"))
 	bmp.Save("image0.png", ImageFormat.Png);
 }
 ```
+
+## Contribute
+Want to help make FastBitmap the go to pixel manipulation library for .NET? 
+Why not contibute to the project! There are multiple ways you can contribute to this
+project.
+
+### Use FastBitmap in your Project
+Using the library in your next project will help by getting more downloads an more recognition.
+It's easy to get started and provides fast image manipulation functionality.
+
+### Submit Pull Requests
+You could submit a pull request with bug fixes, new features, examples, or anything else that
+comes to mind. Just make sure you read the CONTRIBUTE.md for pull request requirements.
+
+### Donate
+If you don't want to submit a pull request, consider donating. This will help me continue to
+work on the project in my free time.
+
+[buymecoffee.com](https://www.buymeacoffee.com/hazdryx)
