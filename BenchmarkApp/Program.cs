@@ -41,7 +41,7 @@ namespace Hazdryx.Drawing.Benchmark
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("FastBitmap (v1.1.0) Benchmarking App");
+            Console.WriteLine("FastBitmap (v1.2.0) Benchmarking App");
             Console.WriteLine("------------------------------------------------");
 
             //

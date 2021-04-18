@@ -5,15 +5,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>Hazdryx.FastBitmap</PackageId>
     <Authors>Christopher Bishop</Authors>
-    <Description>A wrapper for .NET Standard System.Drawing.Bitmap which increases read/write pixel operations.</Description>
+    <Description>A .NET Standard library which wraps the System.Drawing.Bitmap class for improved pixel read/write performance.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright © Christopher Bishop 2020</Copyright>
+    <Copyright>Copyright © Christopher Bishop 2021</Copyright>
     <PackageProjectUrl>https://github.com/hazdryx/FastBitmap</PackageProjectUrl>
     <RepositoryUrl>https://github.com/hazdryx/FastBitmap</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Product>Hazdryx.FastBitmap</Product>
-    <Company>Hazdryx</Company>
-    <Version>1.1.2</Version>
+    <Company></Company>
+    <Version>1.2.0</Version>
     <AssemblyName />
   </PropertyGroup>
 
