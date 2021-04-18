@@ -1,7 +1,8 @@
 # FastBitmap
 A .NET Standard library which wraps the System.Drawing.Bitmap class for improved pixel read/write performance.
 
-[![nuget](https://img.shields.io/nuget/v/Hazdryx.FastBitmap.svg)](https://www.nuget.org/packages/Hazdryx.FastBitmap/) [![build](https://github.com/hazdryx/FastBitmap/actions/workflows/publish.yml/badge.svg)]
+[![nuget](https://img.shields.io/nuget/v/Hazdryx.FastBitmap.svg)](https://www.nuget.org/packages/Hazdryx.FastBitmap/) 
+![build](https://github.com/hazdryx/FastBitmap/actions/workflows/publish.yml/badge.svg)
 
 ## Benchmarks
 The benchmark graph below shows just how much faster FastBitmap is. When using the fastest mode it can see
