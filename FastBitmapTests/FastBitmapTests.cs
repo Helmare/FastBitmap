@@ -1,11 +1,66 @@
 using System;
+using System.Drawing;
 using Xunit;
 
-namespace Hazdryx.Drawing.Tests
+namespace Hazdryx.Drawing.FastBitmapTests
 {
-    public class FastBitmapTests
+    public class DataFilled : FastBitmapTestBase
     {
-        private static readonly int[] ColorData = new int[]
+        public static FastBitmap SetupBitmap()
+        {
+            FastBitmap bmp = new FastBitmap(3, 4);
+            Array.Copy(ColorData, bmp.Data, 12);
+            return bmp;
+        }
+        public DataFilled() : base(SetupBitmap())
+        {
+        }
+    }
+    
+    public class ImageFilled : FastBitmapTestBase
+    {
+        public static FastBitmap SetupBitmap()
+        {
+            var bmp = new Bitmap(3, 4);
+            var index = 0;
+            for (int x = 0; x < bmp.Width; x++)
+            {
+                for (int y = 0; y < bmp.Height; y++)
+                {
+                    bmp.SetPixel(x, y, Color.FromArgb(ColorData[index]));
+                    index++;
+                }
+            }
+
+            var fastBmp = new FastBitmap(bmp);
+
+            return fastBmp;
+        }
+        public ImageFilled() : base(SetupBitmap())
+        {
+        }
+    }
+    
+    public class ImageFilledAndSet : FastBitmapTestBase
+    {
+        public static FastBitmap SetupBitmap()
+        {
+            var fastBmp = ImageFilled.SetupBitmap();
+
+            for (int i = 0; i < fastBmp.Length; i++)
+            {
+                fastBmp.SetI(i, ColorData[i]);
+            }
+            return fastBmp;
+        }
+        public ImageFilledAndSet() : base(SetupBitmap())
+        {
+        }
+    }
+
+    public abstract class FastBitmapTestBase
+    {
+        protected static readonly int[] ColorData = new int[]
         {
             -65536,     // Red
             -16711936,  // Green
@@ -23,11 +78,12 @@ namespace Hazdryx.Drawing.Tests
             -16777216,  // Black
             -8421505,   // Grey
         };
-        private static FastBitmap SetupBitmap()
+        
+        public readonly FastBitmap FastBmp;
+
+        protected FastBitmapTestBase(FastBitmap fastBmp)
         {
-            FastBitmap bmp = new FastBitmap(3, 4);
-            Array.Copy(ColorData, bmp.Data, 12);
-            return bmp;
+            FastBmp = fastBmp;
         }
         
         #region GetI and TryGetI by index Tests
@@ -37,7 +93,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(8, 2131035647)]
         public void GetI_ShouldReturnCorrectValue(int index, int expected)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Equal(expected, bmp.GetI(index));
         }
         [Theory]
@@ -45,7 +101,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(100)]
         public void GetI_ShouldThrowException(int index)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Throws<IndexOutOfRangeException>(() => bmp.GetI(index));
         }
         [Theory]
@@ -53,7 +109,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(-5, false, 0)]
         public void TryGetI_ShouldReturnCorrectValues(int index, bool expected, int expectedColor)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Equal(expected, bmp.TryGetI(index, out int color));
             Assert.Equal(expectedColor, color);
         }
@@ -62,9 +118,10 @@ namespace Hazdryx.Drawing.Tests
         #region SetI and TrySetI by index Tests
         [Theory]
         [InlineData(2, 255)]
+        [InlineData(1, -65536)]
         public void SetI_ShouldCorrectlySetPixel(int index, int color)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             bmp.SetI(index, color);
             Assert.Equal(color, bmp.Data[index]);
         }
@@ -73,7 +130,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(12, -50)]
         public void SetI_ShouldThrowException(int index, int color)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Throws<IndexOutOfRangeException>(() => bmp.SetI(index, color));
         }
         [Theory]
@@ -82,7 +139,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(12, 10, false)]
         public void TrySetI_ShouldCorrectlySetPixel(int index, int color, bool expected)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             bool result = bmp.TrySetI(index, color);
 
             Assert.Equal(expected, result);
@@ -97,7 +154,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(0, 2, 6)]
         public void PointToIndex_ShouldCalculate(int x, int y, int expected)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Equal(expected, bmp.PointToIndex(x, y));
         }
         [Theory]
@@ -107,7 +164,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(2, 4)]
         public void PointToIndex_ShouldReturnNegativeOne(int x, int y)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Equal(-1, bmp.PointToIndex(x, y));
         }
         #endregion
@@ -119,7 +176,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(1, 2, 2131099397)]
         public void GetI_Coord_ShouldReturnCorrectValue(int x, int y, int expected)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Equal(expected, bmp.GetI(x, y));
         }
         [Theory]
@@ -129,7 +186,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(2, 6)]
         public void GetI_Coord_ShouldThrowException(int x, int y)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Throws<IndexOutOfRangeException>(() => bmp.GetI(x, y));
         }
         [Theory]
@@ -138,7 +195,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(2, 10, false, 0)]
         public void TryGetI_Coord_ShouldReturnCorrectValue(int x, int y, bool expected, int expectedColor)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Equal(expected, bmp.TryGetI(x, y, out int color));
             Assert.Equal(expectedColor, color);
         }
@@ -147,9 +204,10 @@ namespace Hazdryx.Drawing.Tests
         #region SetI and TrySetI by coord Tests
         [Theory]
         [InlineData(2, 1, 255)]
+        [InlineData(1, 1, -65536)]
         public void SetI_Coord_ShouldCorrectlySetPixel(int x, int y, int color)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             bmp.SetI(x, y, color);
             Assert.Equal(color, bmp.GetI(x, y));
         }
@@ -160,7 +218,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(6, 2)]
         public void SetI_Coord_ShouldThrowException(int x, int y)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             Assert.Throws<IndexOutOfRangeException>(() => bmp.SetI(x, y, -1));
         }
         [Theory]
@@ -169,7 +227,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(0, 12, 10, false)]
         public void TrySetI_Coord_ShouldCorrectlySetPixel(int x, int y, int color, bool expected)
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             bool result = bmp.TrySetI(x, y, color);
 
             Assert.Equal(expected, result);
@@ -177,11 +235,39 @@ namespace Hazdryx.Drawing.Tests
         }
         #endregion
 
+        #region Set then Get from BaseBitmap
+
+        [Theory]
+        [InlineData(2, 1, 255)]
+        [InlineData(1, 1, -65536)]
+        public void SetI_Coord_GetOnBitmap(int x, int y, int color)
+        {
+            FastBitmap bmp = FastBmp;
+            bmp.SetI(x, y, color);
+            var setColor = Color.FromArgb(color);
+            var bmpColor = bmp.BaseBitmap.GetPixel(x, y);
+            Assert.Equal(setColor, bmpColor);
+        }
+        
+        // [Theory]
+        // [InlineData(2, 255)]
+        // [InlineData(1, -65536)]
+        // public void SetI_Index_GetOnBitmap(int index, int color)
+        // {
+        //     FastBitmap bmp = FastBmp;
+        //     bmp.SetI(index, color);
+        //     var setColor = Color.FromArgb(color);
+        //     var bmpColor = bmp.BaseBitmap.GetPixel(bmp.PointToIndex());
+        //     Assert.Equal(setColor, bmpColor);
+        // }
+
+        #endregion
+
         #region Clear Tests
         [Fact]
         public void Clear_ShouldMakeAllPixelsZero()
         {
-            FastBitmap bmp = SetupBitmap();
+            FastBitmap bmp = FastBmp;
             bmp.Clear();
 
             for (int i = 0; i < bmp.Length; i++)
@@ -195,7 +281,7 @@ namespace Hazdryx.Drawing.Tests
         [Fact]
         public void CopyTo_ShouldCopyARegionWhichIsOffset()
         {
-            FastBitmap src = SetupBitmap();
+            FastBitmap src = FastBmp;
             FastBitmap dst = new FastBitmap(3, 3);
 
             src.CopyTo(dst, 1, 1, 1, 2, 2, 2);
@@ -212,7 +298,7 @@ namespace Hazdryx.Drawing.Tests
         [InlineData(0, 0, -1, 1, 3, 4, 2, new int[] { 0, -16777216, 0, 2147419397 })]
         public void CopyTo_ShouldCopyAPartialRegion(int dstX, int dstY, int x, int y, int width, int height, int expected, int[] expectedData)
         {
-            FastBitmap src = SetupBitmap();
+            FastBitmap src = FastBmp;
             FastBitmap dst = new FastBitmap(2, 2);
 
             Assert.Equal(expected, src.CopyTo(dst, dstX, dstY, x, y, width, height));
@@ -224,7 +310,7 @@ namespace Hazdryx.Drawing.Tests
         [Fact]
         public void CopyTo_ShouldCopyARegion()
         {
-            FastBitmap src = SetupBitmap();
+            FastBitmap src = FastBmp;
             FastBitmap dst = new FastBitmap(3, 3);
 
             src.CopyTo(dst, 1, 2, 2, 2);
@@ -236,7 +322,7 @@ namespace Hazdryx.Drawing.Tests
         [Fact]
         public void CopyTo_ShouldCopyASimpleRegion()
         {
-            FastBitmap src = SetupBitmap();
+            FastBitmap src = FastBmp;
             FastBitmap dst = new FastBitmap(2, 2);
 
             src.CopyTo(dst, 1, 1);
@@ -248,7 +334,7 @@ namespace Hazdryx.Drawing.Tests
         [Fact]
         public void CopyTo_ShouldCopyAllPixels()
         {
-            FastBitmap src = SetupBitmap();
+            FastBitmap src = FastBmp;
             FastBitmap dst = new FastBitmap(src.Width, src.Height);
 
             src.CopyTo(dst);
@@ -263,7 +349,7 @@ namespace Hazdryx.Drawing.Tests
         [Fact]
         public void Clone_ShouldCreateNewCopy()
         {
-            FastBitmap src = SetupBitmap();
+            FastBitmap src = FastBmp;
             FastBitmap dst = (FastBitmap) src.Clone();
 
             Assert.Equal(src.Length, dst.Length);
