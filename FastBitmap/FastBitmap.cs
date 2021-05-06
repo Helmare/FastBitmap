@@ -101,10 +101,13 @@ namespace Hazdryx.Drawing
         /// <param name="image">The image which will be drawn to the bitmap.</param>
         public FastBitmap(Image image) : this(image.Width, image.Height)
         {
-            using (Graphics g = Graphics.FromImage(BaseBitmap))
-            {
-                g.DrawImage(image, 0, 0, image.Width, image.Height);
-            }
+            var bmp = (Bitmap) image;
+            var rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            var bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+
+            Marshal.Copy(bmpData.Scan0, Data, 0, Length);
+            
+            bmp.UnlockBits(bmpData);
         }
 
         /// <summary>
