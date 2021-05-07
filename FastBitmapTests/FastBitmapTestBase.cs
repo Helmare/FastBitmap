@@ -4,60 +4,6 @@ using Xunit;
 
 namespace Hazdryx.Drawing.FastBitmapTests
 {
-    public class DataFilled : FastBitmapTestBase
-    {
-        public static FastBitmap SetupBitmap()
-        {
-            FastBitmap bmp = new FastBitmap(3, 4);
-            Array.Copy(ColorData, bmp.Data, 12);
-            return bmp;
-        }
-        public DataFilled() : base(SetupBitmap())
-        {
-        }
-    }
-    
-    public class ImageFilled : FastBitmapTestBase
-    {
-        public static FastBitmap SetupBitmap()
-        {
-            var bmp = new Bitmap(3, 4);
-            var index = 0;
-            for (int y = 0; y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    bmp.SetPixel(x, y, Color.FromArgb(ColorData[index]));
-                    index++;
-                }
-            }
-
-            var fastBmp = new FastBitmap(bmp);
-
-            return fastBmp;
-        }
-        public ImageFilled() : base(SetupBitmap())
-        {
-        }
-    }
-    
-    public class ImageFilledAndSet : FastBitmapTestBase
-    {
-        public static FastBitmap SetupBitmap()
-        {
-            var fastBmp = ImageFilled.SetupBitmap();
-
-            for (int i = 0; i < fastBmp.Length; i++)
-            {
-                fastBmp.SetI(i, ColorData[i]);
-            }
-            return fastBmp;
-        }
-        public ImageFilledAndSet() : base(SetupBitmap())
-        {
-        }
-    }
-
     public abstract class FastBitmapTestBase
     {
         protected static readonly int[] ColorData = new int[]
@@ -244,22 +190,10 @@ namespace Hazdryx.Drawing.FastBitmapTests
         {
             FastBitmap bmp = FastBmp;
             bmp.SetI(x, y, color);
-            var setColor = Color.FromArgb(color);
-            var bmpColor = bmp.BaseBitmap.GetPixel(x, y);
+            Color setColor = Color.FromArgb(color);
+            Color bmpColor = bmp.BaseBitmap.GetPixel(x, y);
             Assert.Equal(setColor, bmpColor);
         }
-        
-        // [Theory]
-        // [InlineData(2, 255)]
-        // [InlineData(1, -65536)]
-        // public void SetI_Index_GetOnBitmap(int index, int color)
-        // {
-        //     FastBitmap bmp = FastBmp;
-        //     bmp.SetI(index, color);
-        //     var setColor = Color.FromArgb(color);
-        //     var bmpColor = bmp.BaseBitmap.GetPixel(bmp.PointToIndex());
-        //     Assert.Equal(setColor, bmpColor);
-        // }
 
         #endregion
 
