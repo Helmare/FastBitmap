@@ -293,5 +293,20 @@ namespace Hazdryx.Drawing.FastBitmapTests
             }
         }
         #endregion
+
+        #region GDI Tests
+        [Fact]
+        public void GDI_ShouldRenderRect()
+        {
+            using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(-65536)))
+            {
+                g.FillRectangle(brush, 0, 0, FastBmp.Width, FastBmp.Height);
+                g.Flush();
+            }
+
+            Assert.Equal(-65536, FastBmp.GetI(4));
+        }
+        #endregion
     }
 }
