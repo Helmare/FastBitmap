@@ -457,6 +457,26 @@ namespace Hazdryx.Drawing
         }
 
         /// <summary>
+        ///     Syncs a bitmap to the current data.
+        /// </summary>
+        public void Sync(Bitmap bmp)
+        {
+            if (bmp.Width != Width || bmp.Height != Height)
+                throw new ArgumentException("Width and Height of this image and the Bitmap must be identical");
+
+            Rectangle rect = new Rectangle(0, 0, Width, Height);
+            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            Marshal.Copy(bmpData.Scan0, Data, 0, Length);
+
+            bmp.UnlockBits(bmpData);
+        }
+        /// <summary>
+        ///     Syncs with the current bitmap to the current data.
+        /// </summary>
+        public void Sync() => Sync(BaseBitmap);
+
+        /// <summary>
         ///     Frees pinned resources and disposes base bitmap.
         /// </summary>
         public void Dispose()

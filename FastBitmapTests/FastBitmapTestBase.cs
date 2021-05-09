@@ -307,6 +307,35 @@ namespace Hazdryx.Drawing.FastBitmapTests
 
             Assert.Equal(-65536, FastBmp.GetI(4));
         }
+
+        [Fact]
+        public void GDI_ShouldRenderRectSync()
+        {
+            using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(-65536)))
+            {
+                g.FillRectangle(brush, 0, 0, FastBmp.Width, FastBmp.Height);
+                g.Flush();
+            }
+            FastBmp.Sync();
+
+            Assert.Equal(-65536, FastBmp.GetI(4));
+        }
+
+        [Fact]
+        public void GDI_ShouldSyncAfterRenderRect()
+        {
+            using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
+            using (SolidBrush brush = new SolidBrush(Color.FromArgb(-65536)))
+            {
+                g.FillRectangle(brush, 0, 0, FastBmp.Width, FastBmp.Height);
+                g.Flush();
+            }
+            FastBmp.Sync();
+            FastBmp.SetI(0, -1);
+
+            Assert.Equal(-1, FastBmp.BaseBitmap.GetPixel(0, 0).ToArgb());
+        }
         #endregion
     }
 }
