@@ -313,6 +313,8 @@ namespace Hazdryx.Drawing.FastBitmapTests
         {
             using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
             {
+                // Some graphics operation.
+                g.FillRectangle(Brushes.Red, 0, 0, 2, 2);
             }
 
             IntPtr scan0 = FastBmp.Scan0;
