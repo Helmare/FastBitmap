@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Xunit;
 
 namespace Hazdryx.Drawing.FastBitmapTests
@@ -294,6 +295,20 @@ namespace Hazdryx.Drawing.FastBitmapTests
         }
         #endregion
 
+        #region Scan0 Should Be Identical
+        [Fact]
+        public void ShouldHaveIdenticalScan0()
+        {
+            IntPtr scan0 = FastBmp.Scan0;
+            Rectangle rect = new Rectangle(0, 0, 1, 1);
+            BitmapData bmpData = FastBmp.BaseBitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            Assert.Equal(scan0, bmpData.Scan0);
+
+            FastBmp.BaseBitmap.UnlockBits(bmpData);
+        }
+        #endregion
+
         #region GDI Tests
         [Fact]
         public void GDI_ShouldRenderRect()
@@ -309,7 +324,7 @@ namespace Hazdryx.Drawing.FastBitmapTests
         }
 
         [Fact]
-        public void GDI_ShouldRenderRectSync()
+        public void GDI_ShouldHaveSameScan0AfterRenderRect()
         {
             using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
             using (SolidBrush brush = new SolidBrush(Color.FromArgb(-65536)))
@@ -317,24 +332,9 @@ namespace Hazdryx.Drawing.FastBitmapTests
                 g.FillRectangle(brush, 0, 0, FastBmp.Width, FastBmp.Height);
                 g.Flush();
             }
-            FastBmp.Sync();
-
-            Assert.Equal(-65536, FastBmp.GetI(4));
-        }
-
-        [Fact]
-        public void GDI_ShouldSyncAfterRenderRect()
-        {
-            using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
-            using (SolidBrush brush = new SolidBrush(Color.FromArgb(-65536)))
-            {
-                g.FillRectangle(brush, 0, 0, FastBmp.Width, FastBmp.Height);
-                g.Flush();
-            }
-            FastBmp.Sync();
-            FastBmp.SetI(0, -1);
 
             Assert.Equal(-1, FastBmp.BaseBitmap.GetPixel(0, 0).ToArgb());
+            ShouldHaveIdenticalScan0();
         }
         #endregion
     }
