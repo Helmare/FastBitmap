@@ -25,14 +25,14 @@ namespace Hazdryx.Drawing.FastBitmapTests
             -16777216,  // Black
             -8421505,   // Grey
         };
-        
+
         public readonly FastBitmap FastBmp;
 
         protected FastBitmapTestBase(FastBitmap fastBmp)
         {
             FastBmp = fastBmp;
         }
-        
+
         #region GetI and TryGetI by index Tests
         [Theory]
         [InlineData(0, -65536)]
@@ -285,7 +285,7 @@ namespace Hazdryx.Drawing.FastBitmapTests
         public void Clone_ShouldCreateNewCopy()
         {
             FastBitmap src = FastBmp;
-            FastBitmap dst = (FastBitmap) src.Clone();
+            FastBitmap dst = (FastBitmap)src.Clone();
 
             Assert.Equal(src.Length, dst.Length);
             for (int i = 0; i < src.Length; i++)
@@ -295,28 +295,10 @@ namespace Hazdryx.Drawing.FastBitmapTests
         }
         #endregion
 
-        #region GDI Tests
+        #region Scan0 Should Be Identical
         [Fact]
-        public void GDI_ShouldRenderRect()
+        public void ShouldHaveIdenticalScan0()
         {
-            using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
-            {
-                g.FillRectangle(Brushes.Red, 0, 0, FastBmp.Width, FastBmp.Height);
-                g.Flush();
-            }
-
-            Assert.Equal(-65536, FastBmp.GetI(4));
-        }
-
-        [Fact]
-        public void GDI_ShouldHaveSameScan0()
-        {
-            using (Graphics g = Graphics.FromImage(FastBmp.BaseBitmap))
-            {
-                // Some graphics operation.
-                g.FillRectangle(Brushes.Red, 0, 0, 2, 2);
-            }
-
             IntPtr scan0 = FastBmp.Scan0;
             Rectangle rect = new Rectangle(0, 0, 1, 1);
             BitmapData bmpData = FastBmp.BaseBitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
