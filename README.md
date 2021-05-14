@@ -51,4 +51,7 @@ comes to mind. Just make sure you read the CONTRIBUTE.md for pull request requir
 If you don't want to submit a pull request, consider donating. This will help me continue to
 work on the project in my free time.
 
-[buymecoffee.com](https://www.buymeacoffee.com/hazdryx)
+[buymeacoffee.com](https://www.buymeacoffee.com/hazdryx)
+
+## Known Issues
+[#4](https://github.com/hazdryx/FastBitmap/issues/4) On some Linux distros, performing GDI+ (System.Drawing.Graphics) operations result in a desync from the BaseBitmap and FastBitmap.Data.
