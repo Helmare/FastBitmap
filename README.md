@@ -35,21 +35,16 @@ using (FastBitmap bmp = FastBitmap.FromFile("image.png"))
 ```
 
 ## Contribute
-Want to help make FastBitmap the go to pixel manipulation library for .NET? 
-Why not contibute to the project! There are multiple ways you can contribute to this
-project.
+Want to help move this project forward? Consider contributing to the project. There are many different ways you can help out, even if you don't want to submit code changes.
 
-### Use FastBitmap in your Project
-Using the library in your next project will help by getting more downloads an more recognition.
-It's easy to get started and provides fast image manipulation functionality.
+### Use In Your Projects
+The easiest way to contribute is to have this repo as a dependency in your projects. This contribution gives the project more recognition and likely to be seen by other developers, thereby growing the community.
 
 ### Submit Pull Requests
-You could submit a pull request with bug fixes, new features, examples, or anything else that
-comes to mind. Just make sure you read the CONTRIBUTE.md for pull request requirements.
+If you would like to make changes to the codebase or documentation, you can submit a pull request. Make sure to check out the [CONTRIBUTE.md](https://pr.com) for pull request requirements.
 
 ### Donate
-If you don't want to submit a pull request, consider donating. This will help me continue to
-work on the project in my free time.
+If you don't want to submit a pull request but still want to support my work further, consider sending me a donation. Donations help me spend more time on open-source projects so that they can be of the highest quality possible. You can send donations using the link(s) below.
 
 [buymeacoffee.com](https://www.buymeacoffee.com/hazdryx)
 
