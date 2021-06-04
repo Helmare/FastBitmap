@@ -1,36 +1,36 @@
-# Contributing to this Repository
-Welcome to the FastBitmap contribution requirements. I hope this page helps you submit
-your first pull request quickly and painlessly.
+# Contribution Requirements
+Welcome to the contribution requirements! This document will outline the steps needed to submit and ultimately merge your changes into the live codebase.
 
 ## Getting Started
+To start making contributions follow the steps below:
+
 1. Discuss how you would like to contribute through an issue.
 2. Fork the repository.
-3. Create your branch based on the ```master``` branch.
+3. Create a branch based on the `master` branch.
 
-You're now ready to make changes! Please follow the guidelines for different types of changes.
+Now that you're ready to contribute, below are some things to keep in mind to make sure the pull request gets approved quickly.
 
-### Bug Fixes
-When working on a bug, first create a unit test that represents the bug. Then implement the fix and make
-sure the new test and all other tests are passing.
+### Testing
+When working on bug fixes or adding new features, ensure you build tests to keep the codebase healthy and maintainable.
 
-### New Features or Enhancements
-When adding a new feature or improving the code base, please make tests for the changes you are making
-if applicable.
+### Formatting
+Making sure formatting, naming conventions, and file structure match the rest of the project is essential to keeping a healthy codebase. Use common sense when applying this to your contributions.
 
-### Non-Code Changes
-When changes documentation or anything else which does not affect the code, please make sure the format
-is similar to what is already present in the project.
+*I am not too picky about how the code is formatted inside methods.*
+
+### Documentation
+If you're changing the codebase, make sure any classes, methods, etc., are well documented, so it's easy to understand what your change is doing. This project uses [summary tags](https://docs.microsoft.com/en-us/dotnet/csharp/codedoc) for documenting code structures.
+
+### New Dependencies
+If you need to include a new dependency into the project, mention that in the issue about your contribution. The dependency should be compatible with the project's [current license](https://mit-license.org/).
 
 ## Before you Submit
-Once you have made your changes there are just a few more steps before you can submit the pull request.
+Once you've made your changes, there are a few more steps to take before submitting a pull request.
 
-1. Make sure the changes are compatible with the MIT license.
-2. Format the code so it is similar to the rest of the project.
-3. Merge the up to date ```master``` into your branch.
-4. Make sure all the tests pass.
+1. Merge the up-to-date `master` into your branch.
+2. Make sure all new and old tests pass.
 
 ## You're good to go!
-Once you submit your pull request, it will be under review. In this process, you will receive feedback
-on what to change. Once it's good to go it will be merged into the ```master``` branch.
+Once you submit your pull request, it'll be under review. During the review process, you will receive feedback on what to change. When everything looks good, the request will be merged into the `master` branch.
 
-#### Can't wait to what you come up with!
+### I hope to see new contributions from you which move the project forward in extraordinary ways.
