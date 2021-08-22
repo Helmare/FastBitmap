@@ -142,6 +142,10 @@ namespace Hazdryx.Drawing
         /// <param name="index">Index of the pixel.</param>
         /// <param name="color">New color of the pixel.</param>
         public void Set(int index, Color color) => Data[index] = color.ToArgb();
+
+        public void Set(ref int[] data){
+            Marshal.Copy(data,0,this.BitsHandle.AddrOfPinnedObject(),this.Data.Length);
+        }
         /// <summary>
         ///     Sets the color of a pixel.
         /// </summary>
