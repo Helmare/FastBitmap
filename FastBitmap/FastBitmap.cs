@@ -24,6 +24,8 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Hazdryx.Drawing
@@ -444,7 +446,21 @@ namespace Hazdryx.Drawing
             Buffer.BlockCopy(Data, 0, dst.Data, 0, Length * 4);
             return Length;
         }
+        /// <summary>
+        ///     Copies all the color data to the current Bitmap from buffer.
+        /// </summary>
+        /// <param name="buffer">Pixels data to copy from</param>
+        /// <param name="offset">Index at which to begin copying pixel data to the current Bitmap from a buffer.</param>
+        /// <param name="count">The maximum number of pixels to write.</param>
+        /// <returns>The number of pixels copied.</returns>
+        public int Write(int[] buffer, int offset, int count){
+            //Adjust count to prevent ArgumentOutOfRangeException
+            count = count>Length ? Length: count;
 
+            Buffer.BlockCopy(buffer,0,Data,offset,count*sizeof(int));
+            
+            return count;
+        }
         /// <summary>
         ///     Clones the FastBitmap into another FastBitmap.
         /// </summary>

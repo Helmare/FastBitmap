@@ -293,5 +293,25 @@ namespace Hazdryx.Drawing.FastBitmapTests
             }
         }
         #endregion
+        #region Write Tests
+        [Fact]
+        public void Write_ShouldNotThrowOutOfBoundsException(){
+            FastBitmap src = FastBmp;
+            int[] buffer = new int[src.Data.Length+10];
+            //if this throws ArgumentOutOfRangeException then test falls automatically
+            src.Write(buffer,0,buffer.Length);
+        }
+
+        [Fact]
+        public void Write_ShouldWriteAllPixels(){
+            FastBitmap src = FastBmp;
+            FastBitmap dst = new FastBitmap(src.Width, src.Height);
+            dst.Write(src.Data,0,src.Data.Length);
+            for (int i = 0; i < src.Length; i++)
+            {
+                Assert.Equal(src.Data[i], dst.Data[i]);
+            }
+        }
+        #endregion
     }
 }
