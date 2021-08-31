@@ -12,7 +12,7 @@ namespace Hazdryx.Drawing
     ///     This class is based on the work from @SaxxonPike on Stackoverflow:
     ///     https://stackoverflow.com/questions/24701703/c-sharp-faster-alternatives-to-setpixel-and-getpixel-for-bitmaps-for-windows-f
     /// </summary>
-    public class FastBitmap : ICloneable, IDisposable
+    public partial class FastBitmap : ICloneable, IDisposable
     {
         private static int _defaultArgb = 0;
         private static Color _defaultColor = Color.FromArgb(_defaultArgb);
@@ -308,32 +308,6 @@ namespace Hazdryx.Drawing
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        ///     Reads pixel data from the bitmap into the buffer.
-        /// </summary>
-        /// <param name="buffer">Pixel data buffer.</param>
-        /// <param name="offset">Offset of the pixel buffer.</param>
-        /// <param name="count">Number of pixels to be read.</param>
-        /// <param name="position">Pixel position in the bitmap.</param>
-        /// <returns></returns>
-        public int Read(int[] buffer, int offset, int count, int position)
-        {
-            // Reduce the amount read to fit the buffer and bitmap.
-            int read = count;
-            if (read + offset > buffer.Length)
-            {
-                read = buffer.Length - offset;
-            }
-            if (read + position > Length)
-            {
-                read = Length - position;
-            }
-
-            // Block copy data to buffer.
-            Buffer.BlockCopy(Data, position * 4, buffer, offset * 4, read * 4);
-            return read;
         }
 
         /// <summary>
