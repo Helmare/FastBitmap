@@ -14,7 +14,7 @@ namespace Hazdryx.Drawing
         /// <param name="offset">Offset of the pixel buffer.</param>
         /// <param name="count">Number of pixels to be read.</param>
         /// <param name="position">Pixel position in the bitmap.</param>
-        /// <returns></returns>
+        /// <returns>How many pixels where read.</returns>
         public int Read(int[] buffer, int offset, int count, int position)
         {
             // Reduce the amount read to fit the buffer and bitmap.
@@ -38,7 +38,7 @@ namespace Hazdryx.Drawing
         /// <param name="buffer">Pixel data buffer.</param>
         /// <param name="count">Number of pixels to be read.</param>
         /// <param name="position">Pixel position in the bitmap.</param>
-        /// <returns></returns>
+        /// <returns>How many pixels where read.</returns>
         public int Read(int[] buffer, int count, int position)
         {
             return Read(buffer, 0, count, position);
@@ -48,7 +48,7 @@ namespace Hazdryx.Drawing
         /// </summary>
         /// <param name="buffer">Pixel data buffer.</param>
         /// <param name="position">Pixel position in the bitmap.</param>
-        /// <returns></returns>
+        /// <returns>How many pixels where read.</returns>
         public int Read(int[] buffer, int position)
         {
             return Read(buffer, 0, buffer.Length, position);
@@ -57,10 +57,35 @@ namespace Hazdryx.Drawing
         ///     Reads as much pixel data from the bitmap into the entire buffer.
         /// </summary>
         /// <param name="buffer">Pixel data buffer.</param>
-        /// <returns></returns>
+        /// <returns>How many pixels where read.</returns>
         public int Read(int[] buffer)
         {
             return Read(buffer, 0, buffer.Length, 0);
+        }
+
+        /// <summary>
+        ///     Writes pixel data from the buffer to the bitmap.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <param name="offset">Offset of the pixel buffer.</param>
+        /// <param name="count">Number of pixels to be read.</param>
+        /// <param name="position">Pixel position in the bitmap.</param>
+        /// <returns>How many pixels where written.</returns>
+        public int Write(int[] buffer, int offset, int count, int position)
+        {
+            // Reduce the amount writen to fit the buffer and bitmap.
+            int write = count;
+            if (write + offset > buffer.Length)
+            {
+                write = buffer.Length - offset;
+            }
+            if (write + position > Length)
+            {
+                write = Length - position;
+            }
+
+            Buffer.BlockCopy(buffer, offset * 4, Data, position * 4, write * 4);
+            return write;
         }
     }
 }
