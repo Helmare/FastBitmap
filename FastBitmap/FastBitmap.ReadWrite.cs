@@ -32,5 +32,35 @@ namespace Hazdryx.Drawing
             Buffer.BlockCopy(Data, position * 4, buffer, offset * 4, read * 4);
             return read;
         }
+        /// <summary>
+        ///     Reads pixel data from the bitmap into the buffer.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <param name="count">Number of pixels to be read.</param>
+        /// <param name="position">Pixel position in the bitmap.</param>
+        /// <returns></returns>
+        public int Read(int[] buffer, int count, int position)
+        {
+            return Read(buffer, 0, count, position);
+        }
+        /// <summary>
+        ///     Reads pixel data from the bitmap into the entire buffer.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <param name="position">Pixel position in the bitmap.</param>
+        /// <returns></returns>
+        public int Read(int[] buffer, int position)
+        {
+            return Read(buffer, 0, buffer.Length, position);
+        }
+        /// <summary>
+        ///     Reads as much pixel data from the bitmap into the entire buffer.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <returns></returns>
+        public int Read(int[] buffer)
+        {
+            return Read(buffer, 0, buffer.Length, 0);
+        }
     }
 }
