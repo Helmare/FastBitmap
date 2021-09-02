@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Hazdryx.Drawing
 {
@@ -86,6 +87,36 @@ namespace Hazdryx.Drawing
 
             Buffer.BlockCopy(buffer, offset * 4, Data, position * 4, write * 4);
             return write;
+        }
+        /// <summary>
+        ///     Writes pixel data from the buffer to the bitmap.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <param name="count">Number of pixels to be read.</param>
+        /// <param name="position">Pixel position in the bitmap.</param>
+        /// <returns>How many pixels where written.</returns>
+        public int Write(int[] buffer, int count, int position)
+        {
+            return Write(buffer, 0, count, position);
+        }
+        /// <summary>
+        ///     Writes pixel data from the buffer to the bitmap.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <param name="position">Pixel position in the bitmap.</param>
+        /// <returns>How many pixels where written.</returns>
+        public int Write(int[] buffer, int position)
+        {
+            return Write(buffer, 0, buffer.Length, position);
+        }
+        /// <summary>
+        ///     Writes pixel data from the buffer to the bitmap.
+        /// </summary>
+        /// <param name="buffer">Pixel data buffer.</param>
+        /// <returns>How many pixels where written.</returns>
+        public int Write(int[] buffer)
+        {
+            return Write(buffer, 0, buffer.Length, 0);
         }
     }
 }
