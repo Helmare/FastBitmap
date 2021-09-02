@@ -12,7 +12,7 @@ namespace Hazdryx.Drawing
     ///     This class is based on the work from @SaxxonPike on Stackoverflow:
     ///     https://stackoverflow.com/questions/24701703/c-sharp-faster-alternatives-to-setpixel-and-getpixel-for-bitmaps-for-windows-f
     /// </summary>
-    public class FastBitmap : ICloneable, IDisposable
+    public partial class FastBitmap : ICloneable, IDisposable
     {
         private static int _defaultArgb = 0;
         private static Color _defaultColor = Color.FromArgb(_defaultArgb);
@@ -156,7 +156,6 @@ namespace Hazdryx.Drawing
         /// <param name="y">Y component of the pixel.</param>
         /// <returns></returns>
         public Color Get(int x, int y) => Color.FromArgb(Data[PointToIndex(x, y)]);
-
         /// <summary>
         ///     Gets color of a pixel.
         /// </summary>

@@ -197,6 +197,47 @@ namespace Hazdryx.Drawing.FastBitmapTests
 
         #endregion
 
+        #region Read and Write Tests
+        [Theory]
+        [InlineData(3, 0, 3, 0, 3, new int[] { -65536, -16711936, -16776961 })]
+        [InlineData(4, 1, 3, 0, 3, new int[] { 0, -65536, -16711936, -16776961 })]
+        [InlineData(3, 0, 2, 0, 2, new int[] { -65536, -16711936, 0 })]
+        [InlineData(3, 0, 3, 3, 3, new int[] { -16777216, -8421505, -1 })]
+        [InlineData(3, 1, 3, 0, 2, new int[] { 0, -65536, -16711936, })]
+        [InlineData(3, 0, 3, 10, 2, new int[] { -16777216, -8421505, 0 })]
+        [InlineData(3, 1, 3, 10, 2, new int[] { 0, -16777216, -8421505 })]
+        [InlineData(3, 2, 3, 10, 1, new int[] { 0, 0, -16777216 })]
+        public void Read_ShouldReadIntoBuffer(int bufferLength, int offset, int count, int position, int expectedRead, int[] expectedBuffer)
+        {
+            int[] buffer = new int[bufferLength];
+            int read = FastBmp.Read(buffer, offset, count, position);
+
+            Assert.Equal(expectedRead, read);
+            for (int i = 0; i < buffer.Length; i++)
+            {
+                Assert.Equal(expectedBuffer[i], buffer[i]);
+            }
+        }
+
+        [Theory]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 3, 0, 3)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 1, 3, 0, 2)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 3, 1, 3)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 2, 0, 2)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 3, 10, 2)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 2, 3, 10, 1)]
+        public void Write_ShouldWriteFromBuffer(int[] buffer, int offset, int count, int position, int expectedWrite)
+        {
+            int write = FastBmp.Write(buffer, offset, count, position);
+
+            Assert.Equal(expectedWrite, write);
+            for(int i = 0; i < expectedWrite; i++)
+            {
+                Assert.Equal(buffer[i + offset], FastBmp.GetI(i + position));
+            }
+        }
+        #endregion
+
         #region Clear Tests
         [Fact]
         public void Clear_ShouldMakeAllPixelsZero()
