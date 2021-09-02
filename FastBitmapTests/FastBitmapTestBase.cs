@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 using Xunit;
 
 namespace Hazdryx.Drawing.FastBitmapTests
@@ -218,6 +216,24 @@ namespace Hazdryx.Drawing.FastBitmapTests
             for (int i = 0; i < buffer.Length; i++)
             {
                 Assert.Equal(expectedBuffer[i], buffer[i]);
+            }
+        }
+
+        [Theory]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 3, 0, 3)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 1, 3, 0, 2)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 3, 1, 3)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 2, 0, 2)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 0, 3, 10, 2)]
+        [InlineData(new int[] { -65536, -16711936, -16776961 }, 2, 3, 10, 1)]
+        public void Write_ShouldWriteFromBuffer(int[] buffer, int offset, int count, int position, int expectedWrite)
+        {
+            int write = FastBmp.Write(buffer, offset, count, position);
+
+            Assert.Equal(expectedWrite, write);
+            for(int i = 0; i < expectedWrite; i++)
+            {
+                Assert.Equal(buffer[i + offset], FastBmp.GetI(i + position));
             }
         }
         #endregion
