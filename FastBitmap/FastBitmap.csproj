@@ -13,7 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <Product>Hazdryx.FastBitmap</Product>
     <Company></Company>
-    <Version>1.3.0</Version>
+    <Version>1.3.1</Version>
     <AssemblyName />
   </PropertyGroup>
 
