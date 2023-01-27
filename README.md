@@ -43,10 +43,5 @@ The easiest way to contribute is to have this repo as a dependency in your proje
 ### Submit Pull Requests
 If you would like to make changes to the codebase or documentation, you can submit a pull request. Make sure to check out the [CONTRIBUTE.md](https://github.com/hazdryx/FastBitmap/blob/master/CONTRIBUTING.md) for pull request requirements.
 
-### Donate
-If you don't want to submit a pull request but still want to support my work further, consider sending me a donation. Donations help me spend more time on open-source projects so that they can be of the highest quality possible. You can send donations using the link(s) below.
-
-[buymeacoffee.com](https://www.buymeacoffee.com/hazdryx)
-
 ## Known Issues
 [#4](https://github.com/hazdryx/FastBitmap/issues/4) On some Linux distros, performing GDI+ (System.Drawing.Graphics) operations result in a desync from the BaseBitmap and FastBitmap.Data.
