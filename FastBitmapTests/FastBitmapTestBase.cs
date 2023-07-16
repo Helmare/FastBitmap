@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using Xunit;
 
 namespace Hazdryx.Drawing.FastBitmapTests
@@ -24,14 +25,14 @@ namespace Hazdryx.Drawing.FastBitmapTests
             -16777216,  // Black
             -8421505,   // Grey
         };
-        
+
         public readonly FastBitmap FastBmp;
 
         protected FastBitmapTestBase(FastBitmap fastBmp)
         {
             FastBmp = fastBmp;
         }
-        
+
         #region GetI and TryGetI by index Tests
         [Theory]
         [InlineData(0, -65536)]
@@ -325,13 +326,27 @@ namespace Hazdryx.Drawing.FastBitmapTests
         public void Clone_ShouldCreateNewCopy()
         {
             FastBitmap src = FastBmp;
-            FastBitmap dst = (FastBitmap) src.Clone();
+            FastBitmap dst = (FastBitmap)src.Clone();
 
             Assert.Equal(src.Length, dst.Length);
             for (int i = 0; i < src.Length; i++)
             {
                 Assert.Equal(src.Data[i], dst.Data[i]);
             }
+        }
+        #endregion
+
+        #region Scan0 Should Be Identical
+        [Fact]
+        public void ShouldHaveIdenticalScan0()
+        {
+            IntPtr scan0 = FastBmp.Scan0;
+            Rectangle rect = new Rectangle(0, 0, 1, 1);
+            BitmapData bmpData = FastBmp.BaseBitmap.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+            Assert.Equal(scan0, bmpData.Scan0);
+
+            FastBmp.BaseBitmap.UnlockBits(bmpData);
         }
         #endregion
     }

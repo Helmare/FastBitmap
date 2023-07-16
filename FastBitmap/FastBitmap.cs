@@ -34,6 +34,10 @@ namespace Hazdryx.Drawing
         /// </summary>
         public int[] Data { get; }
         /// <summary>
+        ///     Gets the Scan0 of the color data.
+        /// </summary>
+        public IntPtr Scan0 => BitsHandle.AddrOfPinnedObject();
+        /// <summary>
         ///     Gets the Garbage Collector handle for the pixel data.
         /// </summary>
         protected GCHandle BitsHandle { get; }
